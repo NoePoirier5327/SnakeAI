@@ -1,16 +1,17 @@
-#include "headers/NN.hpp"
+#include "headers/layer.hpp"
 #include <iostream>
 
 int main()
 {
-  Neuron *neurone = new Neuron();
+  Layer *layer = new Layer(2);
 
   double input[3] = {3, 0, 1};
-  double weight[3] = {3, -0.6, 0.2};
+  double weight[3] = {3, 1, 1};
 
-  neurone->feed_forward(input, weight);
-  std::cout << neurone->display() << std::endl;
+  layer->feed_forward(input, weight);
+  std::cout << layer->display() << std::endl;
 
-  delete neurone;
+  delete layer;
+
   return 0;
 }
