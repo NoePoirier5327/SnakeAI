@@ -17,15 +17,15 @@ class Layer
     /**
      * @brief Destructeur de la couche courante, désinstancie le tabelau de neurone et de sortie de la couche courante
     */
-    ~Layer();
+    //~Layer();
     
     /**
      * @brief Méthode permettant à la couche de neurone de prédire une valeur
-     * @param inputs:double*, tableau contenant les entrées de la couche
-     * @param weights:double*, poid associée à chaque neurone
-     * @return double*, tableau contenant les prédictions de chaque neurones de la couche courante
+     * @param inputs:vector<double>, tableau contenant les entrées de la couche
+     * @param weights:vector<double>, poid associée à chaque neurone
+     * @return vector<double>, tableau contenant les prédictions de chaque neurones de la couche courante
     */
-    double* feed_forward(double *inputs, double *weights);
+    std::vector<double> feed_forward(std::vector<double> inputs, std::vector<double> weights);
     
     /**
      * @brief Méthode permettant l'affichage du neurone courant
@@ -35,15 +35,15 @@ class Layer
     
     /**
      * @brief Accesseur des sorties des neurones de la couche courante
-     * @return double*, tableau contenant la sortie de la couche de neurones
+     * @return vector<double>, tableau contenant la sortie de la couche de neurones
     */
-    double* get_outputs();
+    std::vector<double> get_outputs();
     
     /**
      * @brief Accesseur des poids des connections entre cette couche et la suivante
-     * @return double*, poids des connections entre cette couche et la suivante
+     * @return vector<double>, poids des connections entre cette couche et la suivante
     */
-    double* get_weights();
+    std::vector<double> get_weights();
     
     /**
      * @brief Accesseur du nombre de neurones contenus dans la couche courante
@@ -53,7 +53,7 @@ class Layer
 
   private:
     int nb_neuron; // nombre de neurone contenu dans la couche
-    Neuron *neurons; // tableau des neurones de la couche courante
-    double *outputs; // tableau contenant les sorties de la couche courante
-    double *weights; // tableau contenant les poids de la prochaine couche après celle là
+    std::vector<Neuron> neurons; // tableau des neurones de la couche courante
+    std::vector<double> outputs; // tableau contenant les sorties de la couche courante
+    std::vector<double> weights; // tableau contenant les poids de la prochaine couche après celle là
 };

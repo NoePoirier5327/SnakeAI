@@ -5,8 +5,8 @@ int main()
 {
   Layer *layer = new Layer(2);
 
-  double input[3] = {3, 0, 1};
-  double weight[3] = {3, 1, 1};
+  std::vector<double> input = {0, 1};
+  std::vector<double> weight = {1, 1};
 
   layer->feed_forward(input, weight);
   std::cout << layer->display() << std::endl;

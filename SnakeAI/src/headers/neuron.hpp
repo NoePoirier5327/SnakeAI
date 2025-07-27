@@ -3,6 +3,7 @@
 #include <string>
 #include <random>
 #include <cmath>
+#include <vector>
 
 /**
  * @brief Fonction permettant la génération d'un nombre aléatoire entre deux bornes
@@ -25,11 +26,18 @@ class Neuron
     
     /**
      * @brief Méthode permettant au neurone de prédire une valeur
-     * @param inputs: double *, vecteur contenant les entrées du réseau
-     * @param weights: double *, vecteur contenant les poids associées aux neurones de la couche supérieur
+     * @param inputs: std::vector<double>, vecteur contenant les entrées du réseau
+     * @param weights: std::vector<double>, vecteur contenant les poids associées aux neurones de la couche supérieur
      * @return double, sortie du neurone courant
     */
-    double feed_forward(double *inputs, double *weights);
+    double feed_forward(std::vector<double> inputs, std::vector<double> weights);
+    
+    /**
+     * @brief Méthode permettant au neurone courant d'apprendre
+     * @param wanted_output:double, sortie voulu pour le neurone courant
+     * @param learning_rate:double, taux d'apprentissage du neurone courant
+    */
+    void backward_propagation(double wanted_output, double learning_rate);
     
     /**
      * @brief Méthode d'affichage du neurone courant

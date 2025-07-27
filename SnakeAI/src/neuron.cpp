@@ -20,13 +20,13 @@ Neuron::Neuron()
   this->weight = rng(-1.0, 1.0);
 }
 
-double Neuron::feed_forward(double *inputs, double *weights)
+double Neuron::feed_forward(std::vector<double> inputs, std::vector<double> weights)
 {
-  int n = inputs[0]; // On a défini la taille du tableau à la première case du tableau, les tableaux de poids et d'entrées ont la même taille
+  int n = inputs.size(); // On a défini la taille du tableau à la première case du tableau, les tableaux de poids et d'entrées ont la même taille
   
   // On parcour les tableaux d'entrées et de poids pour calculé la sortie du neurone courant
   // la sortie du neurone courant est la somme de la multiplication des entrées par les poids + le biais courant passée dans une fonction d'activation
-  for (int i = 1; i < n; i++)
+  for (int i = 0; i < n; i++)
     this->output += inputs[i] * weights[i];
   this->output += this->bias; // on ajoute le biais du neurone
   this->output = this->f(this->output); // on active le neurone courant
@@ -34,12 +34,25 @@ double Neuron::feed_forward(double *inputs, double *weights)
   return this->output; // On renvoie la prédiction du neurone
 }
 
+void Neuron::backward_propagation(double wanted_output, double learning_rate)
+{
+  // Calcule de l'erreur du neurone courant
+  double error = wanted_output - this->output;
+
+  // Calcule du delta
+  double delta = error * f_prime(this->output);
+
+  // On met à jour le poid et le biais du neurone
+  this->weight += learning_rate * delta * this->output;
+  this->bias += learning_rate * delta;
+}
+
 std::string Neuron::display()
 { 
   std::string to_display = "";
-  to_display += "Output : " + std::to_string(this->output);
-  to_display += " | Bias : " + std::to_string(this->bias);
-  to_display += " | Weight : " + std::to_string(this->weight);
+  to_display += std::to_string(this->output);
+  //to_display += " | Bias : " + std::to_string(this->bias);
+  //to_display += " | Weight : " + std::to_string(this->weight);
   return to_display; 
 }
 
