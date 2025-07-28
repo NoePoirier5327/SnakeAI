@@ -12,7 +12,7 @@ class MLP
     /**
      * @brief Constructeur du réseau de neurones à plusieurs couches
      * @param nb_neurons:vector<int>, contient, pour chaque couches, le nombre de neurones à instancier
-     * @param nb_inputs:int, nombre d'entrées pour le réseau de neurones
+     * @param nb_inputs:int, nombre d'entrées du réseau, mis à part car couche à part
     */
     MLP(std::vector<int> nb_neurons, int nb_inputs);
     
@@ -43,7 +43,8 @@ class MLP
     private:
       std::vector<Layer*> layers; // Tableau contenant les instances de chaque couche de neurones
       int nb_layers; // nombre de couches instanciées dans le réseau
-      int nb_inputs; // nombre d'entrées de la première couche
+      //int nb_inputs; // nombre d'entrées de la première couche
       std::vector<double> outputs; // tableau contenant les sorties du réseau
       std::vector<double> input_weights; // tableau contenant les poids de la couche d'entrée du réseau
+      std::vector<double> old_input; // On sauvegarde les entrées du réseau pour les affichers plus tard
 };

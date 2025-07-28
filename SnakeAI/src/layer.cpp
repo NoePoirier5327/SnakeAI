@@ -48,7 +48,7 @@ std::string Layer::display()
   std::string to_display = "";
 
   for (int i = 0; i < this->nb_neuron; i++)
-    to_display += this->neurons[i].display() + (i == this->nb_neuron-1 ? "" : " // ");
+    to_display += this->neurons[i].display() + (i == this->nb_neuron-1 ? "" : " || ");
   to_display += "\n";
 
   return to_display;

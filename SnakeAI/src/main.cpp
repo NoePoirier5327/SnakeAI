@@ -1,17 +1,17 @@
-#include "headers/layer.hpp"
+#include "headers/mlp.hpp"
 #include <iostream>
 
 int main()
 {
-  Layer *layer = new Layer(2);
+  std::vector<int> net_shape = {4, 4, 4, 1};
+  MLP *network = new MLP(net_shape, 2);
 
   std::vector<double> input = {0, 1};
-  std::vector<double> weight = {1, 1};
+  network->feed_forward(input);
 
-  layer->feed_forward(input, weight);
-  std::cout << layer->display() << std::endl;
+  std::cout << network->display();
 
-  delete layer;
+  delete network;
 
   return 0;
 }
