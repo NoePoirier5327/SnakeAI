@@ -14,6 +14,20 @@
 double rng(double min, double max);
 
 /**
+ * @brief Fonction d'acitvation des neurones
+ * @param x: double, valeur à activer
+ * @return double, valeur activée
+*/
+double f(double x);
+
+/**
+ * @brief dérivée de la fonction d'activation des neurone (utilisé pour l'apprentissage en règle général)
+ * @param x: double, valeur à activer
+ * @return double, valeur activée
+*/
+double f_prime(double x);
+
+/**
  * @brief Classe gérant le fonctionnement d'un neurone du réseau
 */
 class Neuron
@@ -33,11 +47,27 @@ class Neuron
     double feed_forward(std::vector<double> inputs, std::vector<double> weights);
     
     /**
-     * @brief Méthode permettant au neurone courant d'apprendre
-     * @param wanted_output:double, sortie voulu pour le neurone courant
-     * @param learning_rate:double, taux d'apprentissage du neurone courant
+     * @brief Méthode permettant de calculer le gradient local
+     * @param delta_next: double, prochain gradient local du réseau
+     * @param weight_next: double, prochain poid du réseau
+     * @param learning_rate: double, taux d'apprentissage
+     * @return double, gradient local
     */
-    void backward_propagation(double wanted_output, double learning_rate);
+    double compute_delta(double delta_next, double weight_next, double learning_rate);
+    
+    /**
+     * @brief Méthode permettant de mettre à jour les paramètres du neurone courant
+     * @param delta: double, gradient local
+     * @param prev_outputs: std::vector<double>, vecteur standard contenant les sorties précédentes
+     * @param learning_rate: double, taux d'apprentissage du neurone
+    */
+    void update_parameters(double delta, std::vector<double> prev_outputs, double learning_rate);
+    
+    /**
+     * @brief Accesseur de la valeur du neurone avant activation
+     * @return double, valeur du neurone avant activation
+    */
+    double get_z();
     
     /**
      * @brief Méthode d'affichage du neurone courant
@@ -76,21 +106,8 @@ class Neuron
     double get_bias();
 
   private:
-    /**
-     * @brief Fonction d'activation du neurone
-     * @param x:double, entrée de la fonction
-     * @return double, image de la fonction
-    */
-    double f(double x);
-    
-    /**
-     * @brief Dérivée de la fonction d'activation du réseau de neurone
-     * @param x:double, entrée de la fonction
-     * @return double, image de la fonction dérivée
-    */
-    double f_prime(double x);
-
     double bias; // biais du neurone
     double weight; // poid de la connexion entre le neurone courant et les neurones de la prochaine couche
     double output; // sortie du neurone
+    double z; // valeur du neurone avant activation
 };

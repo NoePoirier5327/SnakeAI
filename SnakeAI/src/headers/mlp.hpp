@@ -29,6 +29,13 @@ class MLP
     std::vector<double> feed_forward(std::vector<double> inputs);
     
     /**
+     * @brief Méthode permettant de faire apprendre le réseau tout entié
+     * @param target: std::vector<double>, sortie voulu pour le réseau
+     * @param learning_rate: double, taux d'apprentissage du réseau
+     */
+    void backward_propagate(std::vector<double> target, double learning_rate);
+    
+    /**
      * @brief Méthode renvoyant une chaine à afficher correspondant à la représentation du réseau
      * @return std::string, chaine de caractère représentant le réseau de neurones
     */
