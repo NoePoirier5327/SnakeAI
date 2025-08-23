@@ -45,21 +45,6 @@ std::vector<double> Layer::feed_forward(std::vector<double> inputs, std::vector<
   return this->outputs;
 }
 
-std::vector<double> Layer::backward_propagate(std::vector<double> deltas_next, std::vector<double> weights_next, double learning_rate, std::vector<double> prev_outputs)
-{
-  std::vector<double> deltas(this->nb_neuron, 0.0);
-  for (int i = 0; i < this->nb_neuron; i++)
-  {
-    double delta = 0.0;
-    for (int j = 0; j < (int)(deltas_next.size()); j++)
-      delta += deltas_next[j] * weights_next[j];
-    delta *= f_prime(this->neurons[i]->get_z());
-    deltas[i] = delta;
-    this->neurons[i]->update_parameters(delta, prev_outputs, learning_rate);
-  }
-  return deltas;
-}
-
 std::string Layer::display()
 {
   std::string to_display = "";

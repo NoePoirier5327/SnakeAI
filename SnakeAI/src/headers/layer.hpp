@@ -28,16 +28,6 @@ class Layer
     std::vector<double> feed_forward(std::vector<double> inputs, std::vector<double> weights);
     
     /**
-     * @brief Méthode permettant la backpropagation de la couche courante
-     * @param deltas_next: std::vector<double>, delta de la prochaine couche
-     * @param weight_next: std::vector<double>, poid de la prochaine couche
-     * @param learning_rate: double, taux d'apprentissage de la couche courante
-     * @param prev_outputs: std::vector<double>, sortie de la couche précédente
-     * @return std::vector<double>, deltas de la couche suivante
-     */
-    std::vector<double> backward_propagate(std::vector<double> deltas_next, std::vector<double> weights_next, double learning_rate, std::vector<double> prev_outputs);
-    
-    /**
      * @brief Méthode permettant l'affichage du neurone courant
      * @return std::string, chaine de caractère à afficher
     */

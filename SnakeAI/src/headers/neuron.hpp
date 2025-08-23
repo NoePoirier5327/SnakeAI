@@ -47,29 +47,6 @@ class Neuron
     double feed_forward(std::vector<double> inputs, std::vector<double> weights);
     
     /**
-     * @brief Méthode permettant de calculer le gradient local
-     * @param delta_next: double, prochain gradient local du réseau
-     * @param weight_next: double, prochain poid du réseau
-     * @param learning_rate: double, taux d'apprentissage
-     * @return double, gradient local
-    */
-    double compute_delta(double delta_next, double weight_next, double learning_rate);
-    
-    /**
-     * @brief Méthode permettant de mettre à jour les paramètres du neurone courant
-     * @param delta: double, gradient local
-     * @param prev_outputs: std::vector<double>, vecteur standard contenant les sorties précédentes
-     * @param learning_rate: double, taux d'apprentissage du neurone
-    */
-    void update_parameters(double delta, std::vector<double> prev_outputs, double learning_rate);
-    
-    /**
-     * @brief Accesseur de la valeur du neurone avant activation
-     * @return double, valeur du neurone avant activation
-    */
-    double get_z();
-    
-    /**
      * @brief Méthode d'affichage du neurone courant
      * @return std::string, chaine de caractère à afficher
     */

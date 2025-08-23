@@ -72,29 +72,7 @@ std::vector<double> MLP::feed_forward(std::vector<double> inputs)
 
 void MLP::backward_propagate(std::vector<double> target, double learning_rate)
 {
-  // 1. Calcul du delta de la couche de sortie
-  std::vector<double> deltas = this->outputs;
-  for (int i = 0; i < (int)(deltas.size()); i++)
-    deltas[i] = (this->outputs[i] - target[i]) * f_prime(this->layers[this->nb_layers - 1]->get_neuron(i)->get_z());
-  //deltas[i] = (this->outputs[i] - target[i]) * this->layers[this->nb_layers-1]->get_neuron(i).f_prime(this->layers[this->nb_layers-1]->get_neuron(i).get_z());
 
-  // 2. Backpropagation vers les couches précédentes
-  for (int l = this->nb_layers-1; l > 0; l--)
-  {
-    std::vector<double> weights_next = this->layers[l]->get_weights();
-    std::vector<double> prev_outputs = this->layers[l-1]->get_outputs();
-    deltas = this->layers[l]->backward_propagate(deltas, weights_next, learning_rate, prev_outputs);
-  }
-
-  // 3. Mise à jour des poids d'entrée
-  for (int i = 0; i < (int)(this->input_weights.size()); i++)
-  {
-    double delta = 0.0;
-    for (int j = 0; j < (int)(deltas.size()); j++)
-      delta += deltas[j] * this->layers[0]->get_neuron(j)->get_weight();
-    delta *= f_prime(this->layers[0]->get_neuron(0)->get_z());
-    this->input_weights[i] -= learning_rate * delta * this->old_input[i];
-  }
 }
 
 std::string MLP::display()
