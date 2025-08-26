@@ -13,26 +13,37 @@ double rng(double min, double max)
   return dis(gen);
 }
 
-Neuron::Neuron()
+Neuron::Neuron(int nb_inputs)
 {
   this->output = 0.0;
+  this->z = 0.0;
   this->bias = rng(-1.0, 1.0);
-  this->weight = rng(-1.0, 1.0);
-  this->z = rng(-1.0, 1.0);
+
+  // On initialise les poids du neurone
+  for (int i = 0; i < nb_inputs; i++)
+    this->weights.push_back(rng(-1.0, 1.0));
 }
 
-double Neuron::feed_forward(std::vector<double> inputs, std::vector<double> weights)
+double Neuron::feed_forward(std::vector<double> inputs)
 {
   int n = inputs.size(); // On a défini la taille du tableau à la première case du tableau, les tableaux de poids et d'entrées ont la même taille
+  this->z = this->bias;
   
   // On parcour les tableaux d'entrées et de poids pour calculé la sortie du neurone courant
   // la sortie du neurone courant est la somme de la multiplication des entrées par les poids + le biais courant passée dans une fonction d'activation
   for (int i = 0; i < n; i++)
-    this->z += inputs[i] * weights[i];
+    this->z += inputs[i] * this->weights[i];
   this->z += this->bias; // on ajoute le biais du neurone
-  this->output = f(this->z); // on active le neurone courant
+  this->output = f(this->z);
 
   return this->output; // On renvoie la prédiction du neurone
+}
+
+void Neuron::update_weights(std::vector<double> inputs, double delta, double learning_rate)
+{
+  for (int i = 0; i < (int)(this->weights.size()); i++)  
+    this->weights[i] += learning_rate * delta * inputs[i];
+  this->bias += learning_rate * delta;
 }
 
 std::string Neuron::display()
@@ -46,17 +57,16 @@ std::string Neuron::display()
 
 // Fonctions d'activation
 // Sinusoïde
-double f(double x) { return sin(x); }
-double f_prime(double x) { return cos(x); }
+//double f(double x) { return sin(x); }
+//double f_prime(double x) { return cos(x); }
 // Sigmoïde
-//double f(double x) { return (1/(1 + exp(-1 * x))); }
-//double f_prime(double x) { return exp(-1 * x) / pow(1 + exp(-1 * x) , 2); }
+double f(double x) { return (1/(1 + exp(-1 * x))); }
+double f_prime(double x) { return exp(-1 * x) / pow(1 + exp(-1 * x) , 2); }
 
 // Accesseurs de l'objet courant
-double Neuron::get_output() { return this->output; }
+std::vector<double> Neuron::get_weights() { return this->weights; }
 double Neuron::get_bias() { return this->bias; }
-double Neuron::get_weight() { return this->weight; }
+double Neuron::get_output() { return this->output; }
 
 // Mutateurs de l'objet courant
 void Neuron::set_bias(double bias) { this->bias = bias; }
-void Neuron::set_weight(double weight) { this->weight = weight; }

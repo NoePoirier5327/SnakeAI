@@ -11,15 +11,24 @@ class MLP
   public:
     /**
      * @brief Constructeur du réseau de neurones à plusieurs couches
-     * @param nb_neurons:vector<int>, contient, pour chaque couches, le nombre de neurones à instancier
-     * @param nb_inputs:int, nombre d'entrées du réseau, mis à part car couche à part
+     * @param layers_shape: vector<int>, contient, pour chaque couches, le nombre de neurones à instancier
+     * @param nb_inputs: int, nombre d'entrées du réseau, mis à part car couche à part
     */
-    MLP(std::vector<int> nb_neurons, int nb_inputs);
+    MLP(std::vector<int> layers_shape, int nb_inputs);
     
     /**
      * @brief Destructeur du réseau de neurones à plusieurs couches
     */
-    ~MLP();
+    //~MLP();
+    
+    /**
+     * @brief Méthode permettant d'entrainer le réseau courant
+     * @param inputs: std::vector<std::vector<double>>, entrées pour lesquelles entrainer le réseau courant
+     * @param target: std::vector<std::vector<double>>, sorties attendues du réseau
+     * @param nb_iter: int, nombre d'itérations d'entrainement du réseau
+     * @param learning_rate: double, taux d'apprentissage du réseau
+    */
+    void train(std::vector<std::vector<double>> inputs, std::vector<std::vector<double>> targets, int nb_iter, double learning_rate);
     
     /**
      * @brief Permet au réseau de prédire une valeur
@@ -48,10 +57,7 @@ class MLP
     std::vector<double> get_outputs();
 
     private:
-      std::vector<Layer*> layers; // Tableau contenant les instances de chaque couche de neurones
-      int nb_layers; // nombre de couches instanciées dans le réseau
-      //int nb_inputs; // nombre d'entrées de la première couche
+      std::vector<Layer> layers; // Tableau contenant les instances de chaque couche de neurones
       std::vector<double> outputs; // tableau contenant les sorties du réseau
-      std::vector<double> input_weights; // tableau contenant les poids de la couche d'entrée du réseau
       std::vector<double> old_input; // On sauvegarde les entrées du réseau pour les affichers plus tard
 };

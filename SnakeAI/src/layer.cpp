@@ -1,67 +1,56 @@
 #include "headers/layer.hpp"
 
-Layer::Layer(int nb_neuron)
+Layer::Layer(int nb_neurons, int nb_inputs)
 {
-  this->nb_neuron = nb_neuron;
-
-  // On créer les tableaux de pointeurs contenant les neurones, les sorties et les poids de chaque neurones
-  //this->neurons = new Neuron [this->nb_neuron];
-  //this->outputs = new double [this->nb_neuron];
-  //this->weights = new double [this->nb_neuron];
-
-  // On alloue la première case des tableaux de sorties et de poids à leurs taille
-  //this->outputs[0] = this->nb_neuron + 1; this->weights[0] = this->nb_neuron + 1;
-  
-  // On instancie les neurones de la couche courante avec les sorties et les poids
-  for (int i = 0; i < this->nb_neuron; i++)
-  {
-    //this->neurons[i] = Neuron();
-    //this->outputs[i+1] = this->neurons[i].get_output(); // On incrémente l'index de 1 car à 0 il y a la taille du tableau
-    //this->weights[i+1] = this->neurons[i].get_weight(); // pareille ici
-    this->neurons.push_back(new Neuron());
-    this->outputs.push_back(this->neurons[i]->get_output());
-    this->weights.push_back(this->neurons[i]->get_weight());
-  }
+  this->nb_neurons = nb_neurons;
+ 
+  // On instancie les neurones de la couche courante avec les sorties, les poids
+  // et on récupère les valeurs avant activation de chaque neurones
+  for (int i = 0; i < this->nb_neurons; i++)
+    this->neurons.push_back(Neuron(nb_inputs));
 }
 
+/*
 Layer::~Layer()
 {
   for (int i = 0; i < this->nb_neuron; i++)
     delete this->neurons[i];
-  /*
-  // On détruit les tableaux des neurones, poids et sorties de la couche courante
-  delete[] this->neurons;
-  delete[] this->outputs;
-  delete[] this->weights;
-  */
 }
+*/
 
-std::vector<double> Layer::feed_forward(std::vector<double> inputs, std::vector<double> weights)
+std::vector<double> Layer::feed_forward(std::vector<double> inputs)
 {
-  // On fait prédire une sortie à chaque neurones et on stock leurs sorties dans le tableau
-  for (int i = 0; i < this->nb_neuron; i++)
-    this->outputs[i] = this->neurons[i]->feed_forward(inputs, weights);
+  std::vector<double> outputs;
+  outputs.reserve(this->neurons.size());
+  
+  // On parcour les neurones et on prédit les sorties de la couche courante
+  for (auto& neuron : this->neurons)
+    outputs.push_back(neuron.feed_forward(inputs));
 
-  return this->outputs;
+  return outputs;
 }
 
 std::string Layer::display()
 {
   std::string to_display = "";
 
-  for (int i = 0; i < this->nb_neuron; i++)
-    to_display += this->neurons[i]->display() + (i == this->nb_neuron-1 ? "" : " || ");
+  for (int i = 0; i < this->nb_neurons; i++)
+    to_display += this->neurons[i].display() + (i == this->nb_neurons-1 ? "" : " || ");
   to_display += "\n";
 
   return to_display;
 }
 
-std::vector<double> Layer::get_outputs() { return this->outputs; }
-std::vector<double> Layer::get_weights() { return this->weights; }
-int Layer::get_nb_neurons() { return this->nb_neuron; }
+int Layer::get_nb_neurons() { return this->nb_neurons; }
+Neuron& Layer::get_neuron(int index) { return this->neurons[index]; }
 
-Neuron* Layer::get_neuron(int i)
+std::vector<double> Layer::get_outputs()
 {
-  if (i >= 0 && i < this->nb_neuron) { return this->neurons[i]; }
-  else { return nullptr; }
+  std::vector<double> outputs;
+  outputs.reserve(this->neurons.size());
+
+  for (auto& neuron: this->neurons)
+    outputs.push_back(neuron.get_output());
+
+  return outputs;  
 }

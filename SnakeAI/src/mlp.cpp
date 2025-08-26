@@ -1,96 +1,132 @@
 #include "headers/mlp.hpp"
+#include <ctime>
+#include <iostream>
 #include <string>
 
-MLP::MLP(std::vector<int> nb_neurons, int nb_inputs)
+MLP::MLP(std::vector<int> layers_shape, int nb_inputs)
 {
   // Par défaut les entrées du réseau sont à -1
   this->old_input = {-1};
 
   //this->nb_layers = nb_neurons[0] - 1;
-  this->nb_layers = nb_neurons.size();
-  //this->nb_inputs = nb_inputs;
-  
-  // On alloue la mémoire pour le réseau à plusieurs couches et la sortie
-  //this->layers = new Layer* [this->nb_layers];
-  //this->outputs = new double [this->nb_layers+1]; // Parce que à l'index 0 il y a la taille du tableau
-  //this->input_weights = new double[nb_inputs+1]; // pareille ici
+  int nb_layers = layers_shape.size();
+  int inputs_size = nb_inputs;
 
-  // On instancie les couches
-  for (int i = 0; i < this->nb_layers; i++)
-    this->layers.push_back(new Layer(nb_neurons[i]));
-    //this->layers[i] = new Layer(nb_neurons[i+1]);
+  // On instancie les couches et on récupère les valeurs avant activation de leurs neurones
+  for (int i = 0; i < nb_layers; i++)
+  {
+    this->layers.push_back(Layer(layers_shape[i], inputs_size));
+    inputs_size = layers_shape[i];
+  }
 
   // On construit le tableau contenant les sorties en récupèrant les dernières sorties du percéptron
-  this->outputs = this->layers[this->nb_layers - 1]->get_outputs();
-  //this->outputs[0] = this->layers[this->nb_layers-1]->get_outputs()[0];
-  //int size_outputs = this->layers[this->nb_layers-1]->get_outputs()[0];
-
-  //for (int i = 0; i < size_outputs; i++)
-    //this->outputs.push_back(this->layers[this->nb_layers-1]->get_outputs()[i]);
-
-  // On construit celui conenant les poids des entrées, on l'initialise à des poids aléatoires
-  for (int i = 0; i < nb_inputs; i++)
-    this->input_weights.push_back(rng(-1.0, 1.0));
+  this->outputs = this->layers[nb_layers - 1].get_outputs();
 }
 
+/*
 MLP::~MLP()
 {
   // On désinstancie les couches
   for (int i = 0; i < this->nb_layers; i++)
     delete this->layers[i];
+}
+*/
 
-  // On désalloue la mémoire pour les couches et les sorties
-  //delete[] this->layers;
-  //delete[] this->outputs;
+void MLP::train(std::vector<std::vector<double>> inputs,
+                std::vector<std::vector<double>> targets,
+                int nb_iter,
+                double learning_rate)
+{
+  std::cout << "Entrainement du réseau sur "<< nb_iter <<" d'itérations." << std::endl;
+  
+  double temp_initial = clock();
+
+  int i = 0; int n = inputs.size();
+  for (int _ = 0; _ < nb_iter; _++)
+  {
+    if (i == n) i = 0;
+    
+    this->feed_forward(inputs[i]);
+    this->backward_propagate(targets[i], learning_rate);
+
+    i++;
+  }
+  
+  double temp_final = clock();
+
+  std::cout << "Entrainement fini." << std::endl;
+  std::cout << "Temps d'exécution : " << (temp_final - temp_initial) / CLOCKS_PER_SEC * 1000 << " millisecondes." << std::endl;
 }
 
 std::vector<double> MLP::feed_forward(std::vector<double> inputs)
 {
-  old_input = inputs; // On sauvegarde les entrées pour pouvoir les affichers
+  this->old_input = inputs; // On sauvegarde les entrées pour pouvoir les affichers
+  std::vector<double> activations = inputs;
 
-  // On parcours le réseau 
-  // Tout d'abord, on parcours la couche d'entrée
-  std::vector<double> temp_weight;
-  std::vector<double> temp_input;
+  for (auto& layer: this->layers)
+    activations = layer.feed_forward(activations);
 
-  this->layers[0]->feed_forward(inputs, this->input_weights);
-  temp_input = this->layers[0]->get_outputs();
-  temp_weight = this->layers[0]->get_weights();
-
-  // Ensuite, on parcours le reste du réseau
-  for (int i = 1; i < this->nb_layers; i++)
-  {
-    this->layers[i]->feed_forward(temp_input, temp_weight); // On prédit en passant la sortie et les poids précédents en paramètres
-    temp_input = this->layers[i]->get_outputs(); // On récupère la sortie comme nouvelle entrée
-    temp_weight = this->layers[i]->get_weights(); // On récupère les poids de cette couche comme nouveaux poids
-  }
-
-  // On copie la sortie du réseau dans le tableau de sortie et on le renvoie
-  this->outputs = temp_input;
-  return this->outputs;
+  return activations;
 }
 
-void MLP::backward_propagate(std::vector<double> target, double learning_rate)
+void MLP::backward_propagate(std::vector<double> target, double learning_rate) 
 {
+  std::vector<std::vector<double>> deltas(this->layers.size());
 
+  // Dernière couche
+  Layer& output_layer = this->layers.back();
+  deltas.back().resize(output_layer.get_outputs().size());
+
+  for (size_t i = 0; i < output_layer.get_outputs().size(); i++)
+  {
+    double output = output_layer.get_outputs()[i];
+    deltas.back()[i] = (target[i] - output) * (output * (1 - output));
+  }
+
+  // Couches cachées
+  for (int l = this->layers.size() - 2; l >= 0; l--)
+  {
+    Layer& current_layer = this->layers[l];
+    Layer& next_layer = this->layers[l + 1];
+    deltas[l].resize(current_layer.get_outputs().size());
+
+    for (size_t i = 0; i < current_layer.get_outputs().size(); i++)
+    {
+      double sum = 0.0;
+      for (size_t j = 0; j < next_layer.get_outputs().size(); j++)
+        sum += next_layer.get_neuron(j).get_weights()[i] * deltas[l + 1][j];
+      double output = current_layer.get_outputs()[i];
+      deltas[l][i] = sum * (output * (1 - output));
+    }
+  }
+
+  // Mise à jour des poids
+  for (size_t l = 0; l < this->layers.size(); l++)
+  {
+    std::vector<double> inputs = (l == 0) ? this->old_input : this->layers[l - 1].get_outputs();
+    for (size_t j = 0; j < this->layers[l].get_outputs().size(); j++)
+      this->layers[l].get_neuron(j).update_weights(inputs, deltas[l][j], learning_rate);
+  }
 }
 
 std::string MLP::display()
 {
   std::string to_disp;
 
-  // d'abord, on afficher les entrées qui font partis d'une couche à part
+  // d'abord, on affiche les entrées qui font partis d'une couche à part
   to_disp = "Input layer :\n";
   int size = this->old_input.size();
   for (int i = 0; i < size; i++)
     to_disp += std::to_string(this->old_input[i]) + (i == size - 1 ? "" : " || ");
   to_disp += "\n\n";
 
+  // Ensuite les couches cachées
   to_disp += "Hidden layer :\n";
-  for (int i = 0; i < this->nb_layers-1; i++)
-    to_disp += this->layers[i]->display();
+  for (size_t i = 0; i < this->layers.size()-1; i++)
+    to_disp += this->layers[i].display();
 
-  to_disp += "\nOutput layer:\n" + this->layers[this->nb_layers-1]->display();
+  // Enfin 
+  to_disp += "\nOutput layer:\n" + this->layers.back().display();
 
   return to_disp;
 }

@@ -35,16 +35,16 @@ class Neuron
   public:
     /**
      * @brief Constructeur du neurone courant, initialise le biais et le poid du neurone à une valeur aléatoire
+     * @param nb_inputs: int, nombre d'entrées du neurone pour initialiser les poids correspondant aux connections
     */
-    Neuron();
+    Neuron(int nb_inputs);
     
     /**
      * @brief Méthode permettant au neurone de prédire une valeur
      * @param inputs: std::vector<double>, vecteur contenant les entrées du réseau
-     * @param weights: std::vector<double>, vecteur contenant les poids associées aux neurones de la couche supérieur
      * @return double, sortie du neurone courant
     */
-    double feed_forward(std::vector<double> inputs, std::vector<double> weights);
+    double feed_forward(std::vector<double> inputs);
     
     /**
      * @brief Méthode d'affichage du neurone courant
@@ -53,22 +53,18 @@ class Neuron
     std::string display();
     
     /**
-     * @brief Accesseur de la sortie du neurone
-     * @return double, sortie du neurone
+     * @brief Mutateur du poid courant, corrige le poid pour la back propagation
+     * @param inputs: std::vector<double>, entrées correct du neurone
+     * @param delta: double,
+     * @param learning_rate: double, taux d'apprentissage du neurone
     */
-    double get_output();
+    void update_weights(std::vector<double> inputs, double delta, double learning_rate);
     
     /**
-     * @brief Mutateur du poid entre ce neurone et ceux de la prochaine couche
-     * @param weight:double, poid du neurone courant
+     * @brief Accesseur des poids du neurone
+     * @param std::vector<double>, poids du neurone courant
     */
-    void set_weight(double weight);
-    
-    /**
-     * @brief Accesseur du poid du neurone courant
-     * @return double, poid du neurone
-    */
-    double get_weight();
+    std::vector<double> get_weights();
     
     /**
      * @brief Mutateur du biais du neurone courant
@@ -81,10 +77,16 @@ class Neuron
      * @return double, biais du neurone courant
     */
     double get_bias();
+    
+    /**
+     * @brief Accesseur de la sortie du neuron courant
+     * @return double, sortie du neurone courante
+    */
+    double get_output();
 
   private:
     double bias; // biais du neurone
-    double weight; // poid de la connexion entre le neurone courant et les neurones de la prochaine couche
-    double output; // sortie du neurone
+    std::vector<double> weights; // poids du neurone courant
+    double output; // sortie du neurone après activation
     double z; // valeur du neurone avant activation
 };
