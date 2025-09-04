@@ -25,6 +25,7 @@ int main()
 
     outputs = network.feed_forward(test);
     std::cout << "Réponse : " << (outputs[0] >= 0.5) << std::endl;
+    //std::cout << network.display();
   }
 
   return 0;

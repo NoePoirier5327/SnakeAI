@@ -26,3 +26,13 @@ double f(double x);
  * @return double, valeur activée
 */
 double f_prime(double x);
+
+/**
+ * @brief structure gérant les positions sur la carte
+*/
+struct Position
+{
+  int x;
+  int y;
+};
+
