@@ -1,3 +1,31 @@
+/*
+#include "headers/game.hpp"
+#include <ctime>
+#include <ncurses.h>
+
+int main()
+{
+  srand(time(nullptr));
+
+  initscr();
+  cbreak();
+  noecho();
+  keypad(stdscr, TRUE);
+  halfdelay(5);
+  curs_set(0);
+
+  Game *game = new Game(20, 20);
+
+  system("clear");
+  while (game->the_game_is_over() == false) game->run();
+
+  delete game;
+  endwin();
+
+  return 0;
+}
+*/
+
 #include "headers/mlp.hpp"
 #include <iostream>
 
