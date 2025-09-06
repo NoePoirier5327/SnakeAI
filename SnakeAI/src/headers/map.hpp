@@ -49,5 +49,5 @@ class Map
     int **tilemap; // tableau contenant la carte
     int width; // largeur du tableau
     int height; // hauteur du tableau
-    char tileset[6] = " EASH"; // caractères à afficher sur la carte
+    char tileset[6] = " EATH"; // caractères à afficher sur la carte
 };
