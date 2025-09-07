@@ -3,11 +3,14 @@
 Snake::Snake(int height, int width)
 {
   Position temp;
-  temp.x = (rand() % (width - 2)) + 1;
-  temp.y = (rand() % (height - 2)) + 1;
+  //temp.x = (rand() % (width - 2)) + 1;
+  //temp.y = (rand() % (height - 2)) + 1;
+  temp.x = int_rng(1, width-1);
+  temp.y = int_rng(1, height-1);
 
   this->pos.push_back(temp);
-  this->direction = (rand() % (4));
+  //this->direction = (rand() % (4));
+  this->direction = int_rng(0, 3);
 }
 
 void Snake::move(int direction)

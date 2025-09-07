@@ -3,7 +3,6 @@
 #include <ctime>
 #include "map.hpp"
 #include "snake.hpp"
-#include "apple.hpp"
 
 /**
  * @brief Classe gérant la logique de jeu globale
@@ -49,6 +48,11 @@ class Game
      * @brief Méthode chargé d'afficher le jeu global
     */
     void display();
+    
+    /**
+     * @brief Méthode permettant de générer une nouvelle pomme sur la carte
+    */
+    void generate_new_apple();
 
     int w_height; // hauteur de la fenêtre de jeu
     int w_width; // largeur de la fenêtre de jeu
@@ -62,5 +66,5 @@ class Game
 
     Snake *i_snake;
     Map *i_map;
-    Apple *i_apple;
+    Position p_apple;
 };

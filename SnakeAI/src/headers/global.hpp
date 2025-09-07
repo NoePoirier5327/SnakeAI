@@ -11,6 +11,14 @@
 */
 double rng(double min, double max);
 
+/**
+ * @brief Fonction générant un nombre aléatoire entier entre deux bornes entières
+ * @param min: int, borne minimale
+ * @param max: int, borne maximale
+ * @return int, nombre aléatoire généré par la fonction
+*/
+int int_rng(int min, int max);
+
 double* v_max(std::vector<double> a);
 
 /**

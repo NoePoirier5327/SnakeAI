@@ -1,9 +1,9 @@
 #include "headers/game.hpp"
+#include <cstdlib>
 
 Game::Game(int height, int width)
 {
   this->i_map = new Map(height, width);
-  this->i_apple = new Apple(height, width);
   this->i_snake = new Snake(height, width);
 
   this->w_height = height; this->w_width = width;
@@ -11,12 +11,13 @@ Game::Game(int height, int width)
 
   this->score = 0;
   this->start = time(nullptr);
+
+  this->generate_new_apple();
 }
 
 Game::~Game()
 {
   if (this->i_map != nullptr) delete this->i_map;
-  if (this->i_apple != nullptr) delete this->i_apple;
   if (this->i_snake != nullptr) delete this->i_snake;
 }
 
@@ -63,6 +64,24 @@ void Game::handle_inputs()
   }
 }
 
+void Game::generate_new_apple()
+{
+  // On parcours la carte pour trouver les tuiles non occupés par le serpent
+  std::vector<Position> free_tiles;
+  Position temp;
+
+  for (int ligne = 1; ligne < this->w_height - 1; ligne++)
+    for (int colonne = 1; colonne < this->w_width - 1; colonne++)
+    {
+      temp.x = ligne; temp.y = ligne;
+      if (this->i_map->get_tile(temp) == 0) free_tiles.push_back(temp);
+    }
+
+  // On tire un nombre au hasard entre 0 et taille de tab - 1
+  // et on attribue la position associé à la pomme
+  this->p_apple = free_tiles[int_rng(0, (int)(free_tiles.size() - 1))];
+}
+
 void Game::update()
 {
   // Move the snake
@@ -88,14 +107,13 @@ void Game::update()
     if (this->i_map->get_tile(snake[0]) == 2)
     {
       this->i_snake->eat_apple();
-      delete this->i_apple;
-      this->i_apple = new Apple(this->w_height, this->w_width);
+      this->generate_new_apple();
       this->score++; // On incrémente le score lorsqu'on mange une pomme
     }
 
     // Update display
     this->i_map->set_blank();
-    this->i_map->set_tile(this->i_apple->get_pos(), 2);
+    this->i_map->set_tile(this->p_apple, 2);
   
     this->i_map->set_tile(snake[0], 4);
 
