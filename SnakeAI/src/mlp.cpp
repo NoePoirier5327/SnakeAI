@@ -39,7 +39,7 @@ void MLP::train(std::vector<std::vector<double>> inputs,
 {
   std::cout << "Entrainement du réseau sur "<< nb_iter <<" d'itérations." << std::endl;
   
-  double temp_initial = clock();
+  time_t start = time(nullptr);
 
   int i = 0; int n = inputs.size();
   for (int _ = 0; _ < nb_iter; _++)
@@ -52,10 +52,10 @@ void MLP::train(std::vector<std::vector<double>> inputs,
     i++;
   }
   
-  double temp_final = clock();
+  time_t finish = time(nullptr);
 
   std::cout << "Entrainement fini." << std::endl;
-  std::cout << "Temps d'exécution : " << (temp_final - temp_initial) / CLOCKS_PER_SEC * 1000 << " millisecondes." << std::endl;
+  std::cout << "Temps d'exécution : " << (finish - start) << " secondes." << std::endl;
 }
 
 std::vector<double> MLP::feed_forward(std::vector<double> inputs)
