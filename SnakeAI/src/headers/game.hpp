@@ -49,12 +49,6 @@ class Game
      * @brief Méthode chargé d'afficher le jeu global
     */
     void display();
-    
-    /**
-     * @brief Méthode permettant de définir si le serpent est mort ou non
-     * @return bool, si true, le serpent est mort, sinon, non
-    */
-    bool the_snake_is_dead();
 
     int w_height; // hauteur de la fenêtre de jeu
     int w_width; // largeur de la fenêtre de jeu
