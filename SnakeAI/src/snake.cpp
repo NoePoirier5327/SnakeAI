@@ -13,31 +13,44 @@ Snake::Snake(int height, int width)
   this->direction = int_rng(0, 3);
 }
 
+bool Snake::is_not_opposite_of_last_direction(int direction)
+{
+  if (direction == 0 && this->direction == 1) return false;
+  if (direction == 1 && this->direction == 0) return false;
+  if (direction == 2 && this->direction == 3) return false;
+  if (direction == 3 && this->direction == 2) return false;
+  return true;
+}
+
 void Snake::move(int direction)
 {
   Position temp = this->pos[0];
 
-  switch (direction)
+  switch (this->direction)
   {
-    case 0:
+    case 0: // Haut
       temp.y --;
       break;
 
-    case 1:
+    case 1: // Bas
       temp.y ++;
       break;
 
-    case 2:
+    case 2: // Gauche
       temp.x --;
       break;
 
-    case 3:
+    case 3: // Droite
       temp.x ++;
       break;
 
     default:
       break;
   }
+  
+  // Si la nouvelle direction est l'opposé de la nouvelle, on conserve la précédente
+  if (this->is_not_opposite_of_last_direction(direction))
+    this->direction = direction;
 
   this->pos.pop_back();
   this->pos.insert(this->pos.begin(), temp);
@@ -71,6 +84,5 @@ void Snake::eat_apple()
 
   this->pos.push_back(temp);
 }
-
 
 std::vector<Position> Snake::get_pos() { return this->pos; }

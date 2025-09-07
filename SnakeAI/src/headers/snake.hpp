@@ -35,6 +35,13 @@ class Snake
     std::vector<Position> get_pos();
     
   private:
+    /**
+     * @brief Méthode permettant de vérifier que la direction en paramètre n'est pas l'opposé de la dernière direction
+     * @param direction: int, direction à vérifier
+     * @return bool, si true, la direction est l'opposé de la dernière, false sinon
+    */
+    bool is_not_opposite_of_last_direction(int direction);
+
     std::vector<Position> pos; // vecteur contenant les positions des parties du corp du serpent
     int direction; // dernière direction du serpent
 };
