@@ -112,11 +112,10 @@ void Game::update()
     }
 
     // Update display
-    this->i_map->set_blank();
-    this->i_map->set_tile(this->p_apple, 2);
-  
-    this->i_map->set_tile(snake[0], 4);
-
+    this->i_map->set_blank();    
+    this->i_map->set_tile(this->p_apple, 2); // On ajoute la pomme sur la carte
+    this->i_map->set_tile(snake[0], 4); // On ajoute la tête du serpent sur la carte
+    
     for (int i = 1; i < (int)(snake.size()); i++)
       this->i_map->set_tile(snake[i], 3);
   }
