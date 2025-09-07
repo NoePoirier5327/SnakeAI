@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctime>
 #include "map.hpp"
 #include "snake.hpp"
 #include "apple.hpp"
@@ -57,6 +58,9 @@ class Game
 
     int w_height; // hauteur de la fenêtre de jeu
     int w_width; // largeur de la fenêtre de jeu
+    
+    int score;
+    time_t start; // heure à laquelle la partie a commencé
 
     bool game_over; // contient l'état global du jeu
     

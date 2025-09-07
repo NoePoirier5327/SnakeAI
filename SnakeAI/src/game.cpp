@@ -8,6 +8,9 @@ Game::Game(int height, int width)
 
   this->w_height = height; this->w_width = width;
   this->game_over = false;
+
+  this->score = 0;
+  this->start = time(nullptr);
 }
 
 Game::~Game()
@@ -97,6 +100,7 @@ void Game::update()
     this->i_snake->eat_apple();
     delete this->i_apple;
     this->i_apple = new Apple(this->w_height, this->w_width);
+    this->score++; // On incrémente le score lorsqu'on mange une pomme
   }
 
   // Update display
@@ -112,4 +116,15 @@ void Game::update()
 void Game::display()
 {
   this->i_map->display();
+
+  int col_location = this->w_width * 2;
+  
+  move(0, col_location);
+  printw(" Game infos :");
+
+  move(2, col_location);
+  printw("  - Score : %d", this->score);
+
+  move(3, col_location);
+  printw("  - Time : %ds", (int) (time(nullptr) - this->start));
 }
