@@ -18,7 +18,7 @@ Layer::~Layer()
 }
 */
 
-std::vector<double> Layer::feed_forward(std::vector<double> inputs)
+std::vector<double> Layer::feed_forward(std::vector<double>& inputs)
 {
   std::vector<double> outputs;
   outputs.reserve(this->neurons.size());

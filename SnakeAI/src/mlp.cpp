@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-MLP::MLP(std::vector<int> layers_shape, int nb_inputs)
+MLP::MLP(std::vector<int>& layers_shape, int nb_inputs)
 {
   // Par défaut les entrées du réseau sont à -1
   this->old_input = {-1};
@@ -32,8 +32,8 @@ MLP::~MLP()
 }
 */
 
-void MLP::train(std::vector<std::vector<double>> inputs,
-                std::vector<std::vector<double>> targets,
+void MLP::train(std::vector<std::vector<double>>& inputs,
+                std::vector<std::vector<double>>& targets,
                 int nb_iter,
                 double learning_rate)
 {
@@ -58,7 +58,7 @@ void MLP::train(std::vector<std::vector<double>> inputs,
   std::cout << "Temps d'exécution : " << (finish - start) << " secondes." << std::endl;
 }
 
-std::vector<double> MLP::feed_forward(std::vector<double> inputs)
+std::vector<double> MLP::feed_forward(std::vector<double>& inputs)
 {
   this->old_input = inputs; // On sauvegarde les entrées pour pouvoir les affichers
   std::vector<double> activations = inputs;
@@ -69,7 +69,7 @@ std::vector<double> MLP::feed_forward(std::vector<double> inputs)
   return activations;
 }
 
-void MLP::backward_propagate(std::vector<double> target, double learning_rate) 
+void MLP::backward_propagate(std::vector<double>& target, double learning_rate) 
 {
   std::vector<std::vector<double>> deltas(this->layers.size());
 

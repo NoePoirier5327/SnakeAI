@@ -11,10 +11,10 @@ class MLP
   public:
     /**
      * @brief Constructeur du réseau de neurones à plusieurs couches
-     * @param layers_shape: vector<int>, contient, pour chaque couches, le nombre de neurones à instancier
+     * @param layers_shape: vector<int>&, contient, pour chaque couches, le nombre de neurones à instancier
      * @param nb_inputs: int, nombre d'entrées du réseau, mis à part car couche à part
     */
-    MLP(std::vector<int> layers_shape, int nb_inputs);
+    MLP(std::vector<int>& layers_shape, int nb_inputs);
     
     /**
      * @brief Destructeur du réseau de neurones à plusieurs couches
@@ -23,26 +23,26 @@ class MLP
     
     /**
      * @brief Méthode permettant d'entrainer le réseau courant
-     * @param inputs: std::vector<std::vector<double>>, entrées pour lesquelles entrainer le réseau courant
-     * @param target: std::vector<std::vector<double>>, sorties attendues du réseau
+     * @param inputs: std::vector<std::vector<double>>&, entrées pour lesquelles entrainer le réseau courant
+     * @param targets: std::vector<std::vector<double>>&, sorties attendues du réseau
      * @param nb_iter: int, nombre d'itérations d'entrainement du réseau
      * @param learning_rate: double, taux d'apprentissage du réseau
     */
-    void train(std::vector<std::vector<double>> inputs, std::vector<std::vector<double>> targets, int nb_iter, double learning_rate);
+    void train(std::vector<std::vector<double>>& inputs, std::vector<std::vector<double>>& targets, int nb_iter, double learning_rate);
     
     /**
      * @brief Permet au réseau de prédire une valeur
-     * @param inputs:vector<double>, tableau contenant les entrées du réseau
+     * @param inputs: vector<double>&, tableau contenant les entrées du réseau
      * @return vector<double>, tableau correspondant à la sortie du réseau
     */
-    std::vector<double> feed_forward(std::vector<double> inputs);
+    std::vector<double> feed_forward(std::vector<double>& inputs);
     
     /**
      * @brief Méthode permettant de faire apprendre le réseau tout entié
      * @param target: std::vector<double>, sortie voulu pour le réseau
      * @param learning_rate: double, taux d'apprentissage du réseau
      */
-    void backward_propagate(std::vector<double> target, double learning_rate);
+    void backward_propagate(std::vector<double>& target, double learning_rate);
     
     /**
      * @brief Méthode renvoyant une chaine à afficher correspondant à la représentation du réseau

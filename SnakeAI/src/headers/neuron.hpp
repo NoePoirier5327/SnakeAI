@@ -19,10 +19,10 @@ class Neuron
     
     /**
      * @brief Méthode permettant au neurone de prédire une valeur
-     * @param inputs: std::vector<double>, vecteur contenant les entrées du réseau
+     * @param inputs: std::vector<double>&, vecteur contenant les entrées du réseau
      * @return double, sortie du neurone courant
     */
-    double feed_forward(std::vector<double> inputs);
+    double feed_forward(std::vector<double>& inputs);
     
     /**
      * @brief Méthode d'affichage du neurone courant
@@ -32,11 +32,11 @@ class Neuron
     
     /**
      * @brief Mutateur du poid courant, corrige le poid pour la back propagation
-     * @param inputs: std::vector<double>, entrées correct du neurone
+     * @param inputs: std::vector<double>&, entrées correct du neurone
      * @param delta: double,
      * @param learning_rate: double, taux d'apprentissage du neurone
     */
-    void update_weights(std::vector<double> inputs, double delta, double learning_rate);
+    void update_weights(std::vector<double>& inputs, double delta, double learning_rate);
     
     /**
      * @brief Accesseur des poids du neurone

@@ -11,7 +11,7 @@ Neuron::Neuron(int nb_inputs)
     this->weights.push_back(rng(-1.0, 1.0));
 }
 
-double Neuron::feed_forward(std::vector<double> inputs)
+double Neuron::feed_forward(std::vector<double>& inputs)
 {
   int n = inputs.size(); // On a défini la taille du tableau à la première case du tableau, les tableaux de poids et d'entrées ont la même taille
   this->z = this->bias;
@@ -26,7 +26,7 @@ double Neuron::feed_forward(std::vector<double> inputs)
   return this->output; // On renvoie la prédiction du neurone
 }
 
-void Neuron::update_weights(std::vector<double> inputs, double delta, double learning_rate)
+void Neuron::update_weights(std::vector<double>& inputs, double delta, double learning_rate)
 {
   for (int i = 0; i < (int)(this->weights.size()); i++)  
     this->weights[i] += learning_rate * delta * inputs[i];

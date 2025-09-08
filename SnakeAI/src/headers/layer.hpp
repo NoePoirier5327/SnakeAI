@@ -22,10 +22,10 @@ class Layer
     
     /**
      * @brief Méthode permettant à la couche de neurone de prédire une valeur
-     * @param inputs:vector<double>, tableau contenant les entrées de la couche
+     * @param inputs:vector<double>&, tableau contenant les entrées de la couche
      * @return vector<double>, tableau contenant les prédictions de chaque neurones de la couche courante
     */
-    std::vector<double> feed_forward(std::vector<double> inputs);
+    std::vector<double> feed_forward(std::vector<double>& inputs);
     
     /**
      * @brief Méthode permettant l'affichage du neurone courant

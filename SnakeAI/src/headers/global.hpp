@@ -19,8 +19,6 @@ double rng(double min, double max);
 */
 int int_rng(int min, int max);
 
-double* v_max(std::vector<double> a);
-
 /**
  * @brief Fonction d'acitvation des neurones
  * @param x: double, valeur à activer
