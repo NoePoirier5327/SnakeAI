@@ -16,11 +16,6 @@ class MLP
     MLP(std::vector<int>& layers_shape);
     
     /**
-     * @brief Destructeur du réseau de neurones à plusieurs couches
-    */
-    //~MLP();
-    
-    /**
      * @brief Méthode permettant d'entrainer le réseau courant
      * @param inputs: std::vector<std::vector<double>>&, entrées pour lesquelles entrainer le réseau courant
      * @param targets: std::vector<std::vector<double>>&, sorties attendues du réseau
@@ -32,9 +27,9 @@ class MLP
     /**
      * @brief Permet au réseau de prédire une valeur
      * @param inputs: vector<double>&, tableau contenant les entrées du réseau
-     * @return vector<double>, tableau correspondant à la sortie du réseau
+     * @return vector<double>&, tableau correspondant à la sortie du réseau
     */
-    std::vector<double> feed_forward(std::vector<double>& inputs);
+    std::vector<double>& feed_forward(std::vector<double>& inputs);
     
     /**
      * @brief Méthode permettant de faire apprendre le réseau tout entié
@@ -53,7 +48,7 @@ class MLP
      * @brief Accesseur des sorties du réseau
      * @return vector<double>, tableau contenant les sorties du réseau, index 0 -> taille du tableau
     */
-    std::vector<double> get_outputs();
+    std::vector<double>& get_outputs();
 
     private:
       std::vector<Layer> layers; // Tableau contenant les instances de chaque couche de neurones

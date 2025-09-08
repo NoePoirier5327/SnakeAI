@@ -3,7 +3,6 @@
 Neuron::Neuron(int nb_inputs)
 {
   this->output = 0.0;
-  this->z = 0.0;
   this->bias = rng(-1.0, 1.0);
 
   // On initialise les poids du neurone
@@ -14,14 +13,13 @@ Neuron::Neuron(int nb_inputs)
 double Neuron::feed_forward(std::vector<double>& inputs)
 {
   int n = inputs.size(); // On a défini la taille du tableau à la première case du tableau, les tableaux de poids et d'entrées ont la même taille
-  this->z = this->bias;
+  this->output = this->bias;
   
   // On parcour les tableaux d'entrées et de poids pour calculé la sortie du neurone courant
   // la sortie du neurone courant est la somme de la multiplication des entrées par les poids + le biais courant passée dans une fonction d'activation
   for (int i = 0; i < n; i++)
-    this->z += inputs[i] * this->weights[i];
-  //this->z += this->bias; // on ajoute le biais du neurone
-  this->output = f(this->z);
+    this->output += inputs[i] * this->weights[i];
+  this->output = f(this->output);
 
   return this->output; // On renvoie la prédiction du neurone
 }
@@ -43,9 +41,5 @@ std::string Neuron::display()
 }
 
 // Accesseurs de l'objet courant
-std::vector<double> Neuron::get_weights() { return this->weights; }
-double Neuron::get_bias() { return this->bias; }
+std::vector<double>& Neuron::get_weights() { return this->weights; }
 double Neuron::get_output() { return this->output; }
-
-// Mutateurs de l'objet courant
-void Neuron::set_bias(double bias) { this->bias = bias; }

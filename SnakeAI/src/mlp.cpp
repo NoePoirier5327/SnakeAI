@@ -1,4 +1,5 @@
 #include "headers/mlp.hpp"
+#include <algorithm>
 #include <ctime>
 #include <iostream>
 #include <string>
@@ -19,18 +20,9 @@ MLP::MLP(std::vector<int>& layers_shape)
     inputs_size = layers_shape[i];
   }
 
-  // On construit le tableau contenant les sorties en récupèrant les dernières sorties du percéptron
-  this->outputs = this->layers[nb_layers - 1].get_outputs();
+  // On alloue la mémoire nécessaire à la taille de la sortie du réseau
+  this->outputs.reserve(layers_shape.back());
 }
-
-/*
-MLP::~MLP()
-{
-  // On désinstancie les couches
-  for (int i = 0; i < this->nb_layers; i++)
-    delete this->layers[i];
-}
-*/
 
 void MLP::train(std::vector<std::vector<double>>& inputs,
                 std::vector<std::vector<double>>& targets,
@@ -58,15 +50,15 @@ void MLP::train(std::vector<std::vector<double>>& inputs,
   std::cout << "Temps d'exécution : " << (finish - start) << " secondes." << std::endl;
 }
 
-std::vector<double> MLP::feed_forward(std::vector<double>& inputs)
+std::vector<double>& MLP::feed_forward(std::vector<double>& inputs)
 {
   this->old_input = inputs; // On sauvegarde les entrées pour pouvoir les affichers
-  std::vector<double> activations = inputs;
+  this->outputs = inputs;
 
   for (auto& layer: this->layers)
-    activations = layer.feed_forward(activations);
+    this->outputs = layer.feed_forward(this->outputs);
 
-  return activations;
+  return this->outputs;
 }
 
 void MLP::backward_propagate(std::vector<double>& target, double learning_rate) 
@@ -131,4 +123,4 @@ std::string MLP::display()
   return to_disp;
 }
 
-std::vector<double> MLP::get_outputs() { return this->outputs; }
+std::vector<double>& MLP::get_outputs() { return this->outputs; }

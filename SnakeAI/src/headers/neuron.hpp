@@ -40,21 +40,9 @@ class Neuron
     
     /**
      * @brief Accesseur des poids du neurone
-     * @param std::vector<double>, poids du neurone courant
+     * @param std::vector<double>&, poids du neurone courant
     */
-    std::vector<double> get_weights();
-    
-    /**
-     * @brief Mutateur du biais du neurone courant
-     * @param bias:double, biais du neurone courant
-    */
-    void set_bias(double bias);
-    
-    /**
-     * @brief Accesseur du biais du neurone courant
-     * @return double, biais du neurone courant
-    */
-    double get_bias();
+    std::vector<double>& get_weights();
     
     /**
      * @brief Accesseur de la sortie du neuron courant
@@ -66,5 +54,4 @@ class Neuron
     double bias; // biais du neurone
     std::vector<double> weights; // poids du neurone courant
     double output; // sortie du neurone après activation
-    double z; // valeur du neurone avant activation
 };
