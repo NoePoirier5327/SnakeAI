@@ -2,9 +2,7 @@
 
 DQNAgent::DQNAgent(std::vector<int> net_shape, int nb_action, double lr, double epsilon, double gamma)
 {
-  std::vector<int> temp;
-  for (size_t i = 1; i < net_shape.size(); i++) temp.push_back(net_shape[i]);
-  this->mlp = new MLP(temp, net_shape[0]);
+  this->mlp = new MLP(net_shape);
   
   this->nb_action = nb_action;
   this->learning_rate = lr;

@@ -3,17 +3,17 @@
 #include <iostream>
 #include <string>
 
-MLP::MLP(std::vector<int>& layers_shape, int nb_inputs)
+MLP::MLP(std::vector<int>& layers_shape)
 {
   // Par défaut les entrées du réseau sont à -1
   this->old_input = {-1};
 
   //this->nb_layers = nb_neurons[0] - 1;
   int nb_layers = layers_shape.size();
-  int inputs_size = nb_inputs;
+  int inputs_size = layers_shape[0];
 
   // On instancie les couches et on récupère les valeurs avant activation de leurs neurones
-  for (int i = 0; i < nb_layers; i++)
+  for (int i = 1; i < nb_layers; i++)
   {
     this->layers.push_back(Layer(layers_shape[i], inputs_size));
     inputs_size = layers_shape[i];

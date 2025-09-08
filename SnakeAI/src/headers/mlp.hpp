@@ -12,9 +12,8 @@ class MLP
     /**
      * @brief Constructeur du réseau de neurones à plusieurs couches
      * @param layers_shape: vector<int>&, contient, pour chaque couches, le nombre de neurones à instancier
-     * @param nb_inputs: int, nombre d'entrées du réseau, mis à part car couche à part
     */
-    MLP(std::vector<int>& layers_shape, int nb_inputs);
+    MLP(std::vector<int>& layers_shape);
     
     /**
      * @brief Destructeur du réseau de neurones à plusieurs couches

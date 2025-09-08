@@ -5,8 +5,6 @@
 
 int main()
 {
-  srand(time(nullptr));
-
   initscr();
   cbreak();
   noecho();
@@ -14,10 +12,12 @@ int main()
   halfdelay(5);
   curs_set(0);
 
-  Game *game = new Game(20, 20);
+  Game *game = new Game(15, 15);
 
   system("clear");
   while (game->the_game_is_over() == false) game->run();
+
+  getch();
 
   delete game;
   endwin();
@@ -31,8 +31,8 @@ int main()
 
 int main()
 {
-  std::vector<int> net_shape = {6, 8, 8, 8, 1};
-  MLP network = MLP(net_shape, 2);
+  std::vector<int> net_shape = {2, 6, 8, 8, 8, 1};
+  MLP network = MLP(net_shape);
 
   std::vector<std::vector<double>> inputs = {{0, 1}, {1, 0}, {1, 1}, {0, 0}};
   std::vector<std::vector<double>> targets = {{1}, {1}, {0}, {0}};
@@ -52,8 +52,8 @@ int main()
     test[0] = a; test[1] = b;
 
     outputs = network.feed_forward(test);
-    std::cout << "Réponse : " << (outputs[0] >= 0.5) << std::endl;
-    //std::cout << network.display();
+    //std::cout << "Réponse : " << (outputs[0] >= 0.5) << std::endl;
+    std::cout << network.display();
   }
 
   return 0;
