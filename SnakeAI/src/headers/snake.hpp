@@ -30,9 +30,9 @@ class Snake
 
     /**
      * @brief Acceseur du vecteur pôsition du serpent
-     * @return std::vector<Position>, vecteur contenant les pôsitions des parties du corp du serpent
+     * @return std::vector<Position>&, vecteur contenant les pôsitions des parties du corp du serpent
     */
-    std::vector<Position> get_pos();
+    std::vector<Position>& get_pos();
     
   private:
     /**

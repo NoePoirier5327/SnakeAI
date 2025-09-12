@@ -11,13 +11,12 @@ class DQNAgent
   public:
     /**
      * @brief Constructeur de l'agent d'apprentissage
-     * @param net_shape: std::vector<int>, forme globale du réseau de neurone associé
-     * @param nb_action: int, nombre de choix à disposition de l'agent
+     * @param net_shape: std::vector<int>&, forme globale du réseau de neurone associé
      * @param lr: double, taux d'apprentissage de l'agent, par défaut 0.01
      * @param epsilon: double, taux de décision de l'agent, par défaut 0.2
      * @param gamma: double, taux de pertinence des récompenses, par défaut 0.9
     */
-    DQNAgent(std::vector<int> net_shape, int nb_action, double lr = 0.01, double epsilon = 0.2, double gamma = 0.9);
+    DQNAgent(std::vector<int>& net_shape, double lr = 0.01, double epsilon = 0.2, double gamma = 0.9);
     
     /**
      * @brief Destructeur de l'agent courant

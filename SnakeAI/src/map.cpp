@@ -58,7 +58,8 @@ void Map::set_blank()
 void Map::display()
 {
   //printw("\x1b[0;0H");
-  clear();
+  //clear();
+  move(0, 0);
   for (int i = 0; i < this->height; i++)
   {
     for (int j = 0; j <this->width; j++)
@@ -73,8 +74,7 @@ int Map::get_tile(Position pos)
 {
   if (pos.x >= 0 && pos.x < this->width && pos.y >= 0 && pos.y < this->height)
     return this->tilemap[pos.y][pos.x];
-  else
-   return -1;
+  else return -1;
 }
 
 void Map::set_tile(Position pos, int value)

@@ -1,10 +1,10 @@
 #include "headers/dqnagent.hpp"
 
-DQNAgent::DQNAgent(std::vector<int> net_shape, int nb_action, double lr, double epsilon, double gamma)
+DQNAgent::DQNAgent(std::vector<int>& net_shape, double lr, double epsilon, double gamma)
 {
   this->mlp = new MLP(net_shape);
   
-  this->nb_action = nb_action;
+  this->nb_action = net_shape.back();
   this->learning_rate = lr;
   this->epsilon = epsilon;
   this->gamma = gamma;

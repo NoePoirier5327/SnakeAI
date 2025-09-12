@@ -85,4 +85,4 @@ void Snake::eat_apple()
   this->pos.push_back(temp);
 }
 
-std::vector<Position> Snake::get_pos() { return this->pos; }
+std::vector<Position>& Snake::get_pos() { return this->pos; }

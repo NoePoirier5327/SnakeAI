@@ -21,11 +21,11 @@ Game::~Game()
   if (this->i_snake != nullptr) delete this->i_snake;
 }
 
-void Game::run()
+void Game::play(int direction)
 {
-  this->update();
+  this->update(direction);
   this->display();
-  this->handle_inputs();
+  //this->handle_inputs();
 }
 
 bool Game::the_game_is_over() { return this->game_over; }
@@ -82,10 +82,12 @@ void Game::generate_new_apple()
   this->p_apple = free_tiles[int_rng(0, (int)(free_tiles.size() - 1))];
 }
 
-void Game::update()
+void Game::update(int direction)
 {
+  this->apple_eaten = false;
+
   // Move the snake
-  this->i_snake->move(this->direction);
+  this->i_snake->move(direction);
 
   std::vector<Position> snake = this->i_snake->get_pos();
 
@@ -109,6 +111,7 @@ void Game::update()
       this->i_snake->eat_apple();
       this->generate_new_apple();
       this->score++; // On incrémente le score lorsqu'on mange une pomme
+      this->apple_eaten = true;
     }
 
     // Update display
@@ -121,18 +124,44 @@ void Game::update()
   }
 }
 
-void Game::display()
+void Game::display() { this->i_map->display(); }
+
+bool Game::the_snake_ate_an_apple() { return this->apple_eaten; }
+int Game::get_score() { return this->score; }
+
+std::vector<double> Game::get_game_state()
 {
-  this->i_map->display();
-
-  int col_location = this->w_width * 2;
+  std::vector<double> game_state; game_state.reserve(31);
+  Position temp = this->i_snake->get_pos()[0];
+  Position temp1 = temp; temp1.x -= 2; temp.y -= 2;
+  Position a;
   
-  move(0, col_location);
-  printw(" Game infos :");
+  // On récupère le pov du serpent 5x5
+  for (int l = temp1.y; l < temp1.y + 5; l++)
+    for (int c = temp1.x; c < temp1.x + 5; c++)
+    {
+      a.x = c; a.y = l;
+      game_state.push_back(this->i_map->get_tile(a));
+    }
 
-  move(2, col_location);
-  printw("  - Score : %d", this->score);
+  // On récupère la distance avec la pomme
+  game_state.push_back(sqrt(pow(temp.x - this->p_apple.x, 2) + pow(temp.y - this->p_apple.y, 2)));
 
-  move(3, col_location);
-  printw("  - Time : %ds", (int) (time(nullptr) - this->start));
+  // On récupère la position du serpent sur la carte
+  game_state.push_back(temp.x);
+  game_state.push_back(temp.y);
+
+  // On récupère la taille de la carte
+  game_state.push_back(this->w_width);
+  game_state.push_back(this->w_height);
+
+  // On récupère le score
+  game_state.push_back(this->score);
+
+  // On traite les données pour qu'elles soient comprises entre 0 et 1
+  double max_elm = std::max_element(game_state.begin(), game_state.end()) - game_state.begin();
+  for (size_t i = 0; i < game_state.size(); i++)
+    game_state[i] /= max_elm;
+
+  return game_state;
 }
