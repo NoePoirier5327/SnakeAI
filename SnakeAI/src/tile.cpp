@@ -1,12 +1,11 @@
 #include "headers/tile.hpp"
-#include "headers/global.hpp"
 
 Tile::Tile(TileType value, Position pos)
 {
   this->type = value;
 
   // Calcule des coordonnées isométriques
-  this->pos.x = (pos.x - pos.y) * (TILE_WIDTH / 2);
+  this->pos.x = ((pos.x - pos.y) * (TILE_WIDTH / 2)) + (WIN_WIDTH / 4);
   this->pos.y = (pos.x + pos.y) * (TILE_HEIGHT / 2);
   
   // Tile du sol
@@ -42,6 +41,6 @@ void Tile::set_type(TileType value) { this->type = value; }
 
 void Tile::set_coords(Position pos)
 {
-  this->pos.x = (pos.x - pos.y) * (TILE_WIDTH / 2);
+  this->pos.x = ((pos.x - pos.y) * (TILE_WIDTH / 2)) + (WIN_WIDTH / 4);
   this->pos.y = (pos.x + pos.y) * (TILE_HEIGHT / 2); 
 }
