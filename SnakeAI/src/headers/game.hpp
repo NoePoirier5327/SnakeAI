@@ -3,6 +3,7 @@
 #include <SDL2/SDL_render.h>
 #include <ctime>
 #include <algorithm>
+#include <iostream>
 #include "isometric_map.hpp"
 #include "snake.hpp"
 
@@ -14,10 +15,8 @@ class Game
   public:
     /**
      * @brief Constructeur de la classe Game, initialise le jeu
-     * @param height: int, hauteur de la carte en tile, permet de générer la position du serpent et de la pomme
-     * @param width: int, largeur de la carte en tile, même fonction ici
     */
-    Game(int height, int width);
+    Game();
 
     /**
      * @brief Destructeur de la classe Game
@@ -79,9 +78,6 @@ class Game
      * @brief Méthode permettant de générer une nouvelle pomme sur la carte
     */
     void generate_new_apple();
-
-    int w_height; // hauteur de la fenêtre de jeu
-    int w_width; // largeur de la fenêtre de jeu
     
     int score;
     time_t start; // heure à laquelle la partie a commencé

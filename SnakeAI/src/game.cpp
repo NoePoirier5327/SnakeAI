@@ -1,11 +1,11 @@
 #include "headers/game.hpp"
+#include "headers/global.hpp"
 
-Game::Game(int height, int width)
+Game::Game()
 {
-  this->i_map = new IsometricMap(height, width);
-  this->i_snake = new Snake(height, width);
+  this->i_map = new IsometricMap();
+  this->i_snake = new Snake();
 
-  this->w_height = height; this->w_width = width;
   this->game_over = false;
 
   this->score = 0;
@@ -71,8 +71,8 @@ void Game::generate_new_apple()
   std::vector<Position> free_tiles;
   Position temp;
 
-  for (int ligne = 1; ligne < this->w_height - 1; ligne++)
-    for (int colonne = 1; colonne < this->w_width - 1; colonne++)
+  for (int ligne = 1; ligne < MAP_HEIGHT - 1; ligne++)
+    for (int colonne = 1; colonne < MAP_WIDTH - 1; colonne++)
     {
       temp.x = ligne; temp.y = ligne;
       if (this->i_map->get_tile(temp) == 0) free_tiles.push_back(temp);
@@ -91,6 +91,7 @@ void Game::update(int direction)
   this->i_snake->move(direction);
 
   std::vector<Position> snake = this->i_snake->get_pos();
+  //std::cout << (snake.empty() == true ? "true" : "false") << std::endl;
 
   // On vérifie si le serpent est mort
   // On vérifie si la tête du serpent est dans le corp
@@ -99,8 +100,8 @@ void Game::update(int direction)
       this->game_over = true;
   
   // On vérifie si la tête est en dehors de la carte
-  if ((snake[0].x >= 0 && snake[0].x < this->w_width && (snake[0].y == 0 || snake[0].y == this->w_height - 1)) ||
-  (snake[0].y >= 0 && snake[0].y < this->w_height && (snake[0].x == 0 || snake[0].x == this->w_width - 1)))
+  if ((snake[0].x >= 0 && snake[0].x < MAP_WIDTH && (snake[0].y == 0 || snake[0].y == MAP_HEIGHT - 1)) ||
+  (snake[0].y >= 0 && snake[0].y < MAP_HEIGHT && (snake[0].x == 0 || snake[0].x == MAP_WIDTH - 1)))
     this->game_over = true;
   
   // Si le serpent n'est pas mort, on peut continuer le jeu
@@ -118,9 +119,9 @@ void Game::update(int direction)
     // Update display
     //this->i_map->set_blank();    
     this->i_map->modify(this->p_apple, t_apple); // On ajoute la pomme sur la carte
-    this->i_map->modify(snake[0], t_snake); // On ajoute la tête du serpent sur la carte
     
-    for (int i = 1; i < (int)(snake.size()); i++)
+    // On ajoute le serpent sur la carte
+    for (int i = 0; i < (int)(snake.size()); i++)
       this->i_map->modify(snake[i], t_snake);
   }
 }
@@ -153,8 +154,8 @@ std::vector<double> Game::get_game_state()
   game_state.push_back(temp.y);
 
   // On récupère la taille de la carte
-  game_state.push_back(this->w_width);
-  game_state.push_back(this->w_height);
+  game_state.push_back(MAP_WIDTH);
+  game_state.push_back(MAP_HEIGHT);
 
   // On récupère le score
   game_state.push_back(this->score);

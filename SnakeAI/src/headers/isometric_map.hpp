@@ -14,10 +14,8 @@ class IsometricMap
   public:
     /**
      * @brief Constructeur de la classe, alloue la mémoire pour le tableau de la carte
-     * @param map_width:int, largeur de la carte
-     * @param map_height:int, hauteur de la carte
     */
-    IsometricMap(int &map_width, int &map_height);
+    IsometricMap();
 
     /**
      * @brief Destructeur de la classe, désalloue la mémoire pour le tableau de la carte
@@ -47,8 +45,6 @@ class IsometricMap
 
   private:
     Tile ***map; // carte composée d'instances de tuiles
-    int map_width;
-    int map_height;
     int tile_width;
     int tile_height;
 };

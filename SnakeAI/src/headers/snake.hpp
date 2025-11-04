@@ -3,6 +3,7 @@
 #include "global.hpp"
 #include <vector>
 #include <cstdlib>
+#include <iostream>
 
 /**
  * @brief Classe permettant de gérer le serpent
@@ -12,10 +13,8 @@ class Snake
   public:
     /**
      * @brief Constructeur du serpent, détermine sa position de manière aléatoire
-     * @param height: int, hauteur de la carte en tuile
-     * @param width: int, largeur de la carte en tuile
     */
-    Snake(int height, int width);
+    Snake();
     
     /**
      * @brief Méthode déplaçant le serpent en fonction d'une direction donnée

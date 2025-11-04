@@ -1,12 +1,12 @@
 #include "headers/snake.hpp"
 
-Snake::Snake(int height, int width)
+Snake::Snake()
 {
   Position temp;
   //temp.x = (rand() % (width - 2)) + 1;
   //temp.y = (rand() % (height - 2)) + 1;
-  temp.x = int_rng(1, width-1);
-  temp.y = int_rng(1, height-1);
+  temp.x = int_rng(1, MAP_WIDTH-1);
+  temp.y = int_rng(1, MAP_HEIGHT-1);
 
   this->pos.push_back(temp);
   //this->direction = (rand() % (4));
