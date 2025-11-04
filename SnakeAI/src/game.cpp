@@ -1,9 +1,8 @@
 #include "headers/game.hpp"
-#include <cstdlib>
 
 Game::Game(int height, int width)
 {
-  this->i_map = new Map(height, width);
+  this->i_map = new IsometricMap(height, width);
   this->i_snake = new Snake(height, width);
 
   this->w_height = height; this->w_width = width;
@@ -21,10 +20,10 @@ Game::~Game()
   if (this->i_snake != nullptr) delete this->i_snake;
 }
 
-void Game::play(int direction)
+void Game::play(int direction, SDL_Renderer* renderer, SDL_Texture* tileset)
 {
   this->update(direction);
-  this->display();
+  this->display(renderer, tileset);
   //this->handle_inputs();
 }
 
@@ -32,6 +31,7 @@ bool Game::the_game_is_over() { return this->game_over; }
 
 void Game::handle_inputs()
 {
+  /*
   int ch;
   switch (ch = getch())
   {
@@ -62,6 +62,7 @@ void Game::handle_inputs()
     default:
       break;
   }
+  */
 }
 
 void Game::generate_new_apple()
@@ -115,16 +116,16 @@ void Game::update(int direction)
     }
 
     // Update display
-    this->i_map->set_blank();    
-    this->i_map->set_tile(this->p_apple, 2); // On ajoute la pomme sur la carte
-    this->i_map->set_tile(snake[0], 4); // On ajoute la tête du serpent sur la carte
+    //this->i_map->set_blank();    
+    this->i_map->modify(this->p_apple, t_apple); // On ajoute la pomme sur la carte
+    this->i_map->modify(snake[0], t_snake); // On ajoute la tête du serpent sur la carte
     
     for (int i = 1; i < (int)(snake.size()); i++)
-      this->i_map->set_tile(snake[i], 3);
+      this->i_map->modify(snake[i], t_snake);
   }
 }
 
-void Game::display() { this->i_map->display(); }
+void Game::display(SDL_Renderer* renderer, SDL_Texture* tileset) { this->i_map->display(renderer, tileset); }
 
 bool Game::the_snake_ate_an_apple() { return this->apple_eaten; }
 int Game::get_score() { return this->score; }

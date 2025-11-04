@@ -1,109 +1,116 @@
-#include "headers/game.hpp"
-#include "headers/dqnagent.hpp"
-#include <cstring>
-#include <ctime>
-#include <ncurses.h>
-#include <thread>
+#include <stdio.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
-int main()
+#include "headers/isometric_map.hpp"
+
+int main(int argc, char **argv)
 {
-// On déclare nos variables
-  std::vector<int> net_shape = {31, 128, 150, 200, 200, 150, 128, 4};
-  std::vector<double> state; state.reserve(net_shape[0]);
-  std::vector<double> next_state; next_state.reserve(net_shape[0]);
-  int w_width = 15; int w_height = 15; int best_score = 0;
-  int nb_iterations = 0; int best_iteration;
+  SDL_Renderer *win_renderer = nullptr;
+  SDL_Window *window = nullptr;
   
-  // On instancie le jeu et l'agent d'apprentissage
-  DQNAgent* bob = new DQNAgent(net_shape);
-  Game *game = new Game(w_height, w_width);
-  
-  printf("Bonjour, bienvenue sur l'outil d'apprentissage de BOB.\n");
-  printf("Veuillez choisir le nombre d'itérations pour l'entrainement de BOB sur le jeu snake : "); scanf("%d", &nb_iterations);
-  printf("Entrainement de BOB sur %d d'itérations.\n", nb_iterations);
-  
-  // début de l'entrainement de BOB
-  int start = time(nullptr);
+  int map_width = 20;
+  int map_height = 5;
+  IsometricMap *i_map = new IsometricMap(map_width, map_height);
 
-  for (int i = 0; i < nb_iterations; i++)
+  // On initialise la SDL, s'il y a une erreur, l'initialisation renvoie 1
+  if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
   {
-    while (game->the_game_is_over() == false)
-    {
-      state = game->get_game_state();
-      game->update(bob->decide(state));
-      next_state = game->get_game_state();
-
-      if (game->the_snake_ate_an_apple() == true) bob->train(state, 2, next_state, false);
-      else bob->train(state, 0, next_state, false);
-    }
-
-    if (best_score < game->get_score())
-    {
-      best_score = game->get_score();
-      best_iteration = i;
-      bob->train(state, 10, next_state, false);
-    }
-    else
-      bob->train(state, -2, next_state, false);
-
-    delete game;
-    game = new Game(w_height, w_width);
+    fprintf(stderr, "Erreur dans l'initialisation de SDL : %s\n", SDL_GetError());
+    return 1;
   }
 
-  int finish = time(nullptr);
-
-  char test[1];
-  bool run;
-  printf("Temp d'entrainement de BOB : %d\n", start - finish);
-
-  do
+  // On initialise la librairie SDL_Image
+  int flags = IMG_INIT_PNG;
+  int init_status = IMG_Init(flags);
+  if ((init_status & flags) != flags)
   {
-    run = false;
-    printf("Voulez-vous voir le test de l'entrainement de BOB (o/n) : "); scanf("%s", test);
-
-    if (std::strcmp(test, "o") == true || std::strcmp(test, "n") == true)
-    {
-      run = true; printf("Mauvais format de réponse, rééssayez.\n");
-    }
-  } 
-  while (run);
-
-  if (std::strcmp(test, "o"))
-  {
-    // Lancement de ncurses
-    initscr();
-    cbreak();
-    noecho();
-    keypad(stdscr, TRUE);
-    curs_set(0);
-
-    start = time(nullptr);
-  
-    // Boucle d'entrainement de l'agent
-    while (game->the_game_is_over() == false)
-    {
-      state = game->get_game_state();
-      game->play(bob->decide(state));
-    
-      std::this_thread::sleep_for(std::chrono::milliseconds(250));
-
-      finish = time(nullptr) - start;
-    
-      move(0, w_width * 2); printw("Snake");
-      move(1, w_width * 2); printw(" Score : %d", game->get_score());
-      move(2, w_width * 2); printw(" Best score : %d", best_score);
-      move(3, w_width * 2); printw(" Time : %ds", finish);
-      move(4, w_width * 2); printf(" Itération : %d", nb_iterations+1);
-    }
-
-    getch();
-
-    delete game;
-    delete bob;
-    endwin();
+    fprintf(stderr, "Erreur dans l'initialisation de la librairie SDL_Image au format PNG : %s\n", SDL_GetError());
+    return 1;
   }
 
-  printf("Meilleur score : %d\nItération associé : %d\n", best_score, best_iteration);
+  // Création de la fenêtre
+  window = SDL_CreateWindow("Isometric Tile Map", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 430, 300, SDL_WINDOW_SHOWN);
 
+  // Vérification de la bonne création de la fenêtre
+  if (!window)
+  {
+    fprintf(stderr, "Erreur dans la création de la fenêtre : %s\n", SDL_GetError());
+    return 1;
+  }
+
+  // Création de la surface de rendu de la fenêtre
+  win_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+  // On vérifie qu'on a bien récupérer les surfaces
+  if (!win_renderer)
+  {
+    fprintf(stderr, "Erreur dans la création du rendu : %s\n", SDL_GetError());
+    return 1;
+  }
+
+  // Chargement du tileset
+  SDL_Surface *image = nullptr;
+  image = IMG_Load("./res/isometric_tile_set_32x16.png");
+
+  // Vérification du bon chargement de l'image
+  if (!image)
+  {
+    fprintf(stderr, "Erreur dans le chargement de l'image : %s\n", SDL_GetError());
+    return 1;
+  }
+
+  // Création d'une texture pour l'image
+  SDL_Texture *tileset_img = SDL_CreateTextureFromSurface(win_renderer, image);
+  
+  // Variable de gestion des événements de la fenêtre
+  SDL_Event event;
+  bool game_run = true;
+  
+  // Game loop
+  while (game_run)
+  {
+    // Gestion des événements
+    while (SDL_PollEvent(&event))
+    {
+      if (event.type == SDL_QUIT) 
+        game_run = false;
+    }
+
+    // Affichage sur la fenêtre
+    // On affiche un rectangle blanc
+    //SDL_FillRect(win_surface, nullptr, SDL_MapRGB(win_surface->format, 255, 255, 255));
+    SDL_SetRenderDrawColor(win_renderer, 255, 255, 255, 255); // On met la couleur d'affichage à blanc
+    SDL_RenderClear(win_renderer); // On nettoie la fenêtre de rendu
+    SDL_RenderDrawRect(win_renderer, nullptr); // On affiche le fond (un rectangle blanc)
+  
+    // Affichage de la carte
+    i_map->display(win_renderer, tileset_img);
+
+    //SDL_RenderCopy(win_renderer, tileset_img, &wanted_tile, &printed_tile);
+
+    // On met à jour la fenêtre
+    //SDL_UpdateWindowSurface(window);
+    SDL_RenderPresent(win_renderer);
+  }
+  // On désinstancie la map
+  delete i_map;
+
+  // Destruction de la fenêtre
+  SDL_DestroyWindow(window);
+
+  // Destruction du rendu de la fenêtre
+  SDL_DestroyRenderer(win_renderer);
+
+  // Libération de la surface de l'image
+  SDL_FreeSurface(image);
+
+  // Libération de la texture
+  SDL_DestroyTexture(tileset_img);
+
+  // On quitte SDL
+  SDL_Quit();
+
+  // Fin de programme
   return 0;
 }
