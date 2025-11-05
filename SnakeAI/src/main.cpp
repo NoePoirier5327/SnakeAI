@@ -1,9 +1,10 @@
-#include <iostream>
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include <iostream>
+
 #include "headers/game.hpp"
-#include "headers/isometric_map.hpp"
 
 int main(int argc, char **argv)
 {
@@ -50,7 +51,7 @@ int main(int argc, char **argv)
 
   // Chargement du tileset
   SDL_Surface *image = nullptr;
-  image = IMG_Load("./res/isometric_tile_set_32x16.png");
+  image = IMG_Load("./res/isometric_snake.png");
 
   // Vérification du bon chargement de l'image
   if (!image)
@@ -64,38 +65,37 @@ int main(int argc, char **argv)
   
   // Variable de gestion des événements de la fenêtre
   SDL_Event event;
-  bool game_run = true;
   
   // Game loop
-  while (game_run)
+  while (i_game->game_over == false)
   {
     // Gestion des événements
     while (SDL_PollEvent(&event))
     {
       if (event.type == SDL_QUIT) 
-        game_run = false;
+        i_game->game_over = true;
+
+      if (event.type == SDL_KEYDOWN)
+        i_game->handle_inputs(event);
     }
 
-    SDL_Delay(60);
+    SDL_Delay(600);
+
+    i_game->update();
 
     // Affichage sur la fenêtre
     // On affiche un rectangle blanc
-    //SDL_FillRect(win_surface, nullptr, SDL_MapRGB(win_surface->format, 255, 255, 255));
     SDL_SetRenderDrawColor(win_renderer, 255, 255, 255, 255); // On met la couleur d'affichage à blanc
     SDL_RenderClear(win_renderer); // On nettoie la fenêtre de rendu
     SDL_RenderDrawRect(win_renderer, nullptr); // On affiche le fond (un rectangle blanc)
   
     // Affichage de la carte
-    i_game->play(1, win_renderer, tileset_img);
-
-    //SDL_RenderCopy(win_renderer, tileset_img, &wanted_tile, &printed_tile);
+    i_game->display(win_renderer, tileset_img);
 
     // On met à jour la fenêtre
-    //SDL_UpdateWindowSurface(window);
     SDL_RenderPresent(win_renderer);
   }
   // On désinstancie la map
-  //delete i_map;
   delete i_game;
 
   // Destruction de la fenêtre

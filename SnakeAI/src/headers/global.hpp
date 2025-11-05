@@ -3,10 +3,10 @@
 #include <vector>
 #include <random>
 
-const static int WIN_WIDTH = 430;
-const static int WIN_HEIGHT = 300;
-const static int MAP_WIDTH = 10;
-const static int MAP_HEIGHT = 10;
+const static int WIN_WIDTH = 800;
+const static int WIN_HEIGHT = 600;
+const static int MAP_WIDTH = 20;
+const static int MAP_HEIGHT = 20;
 const static int TILE_WIDTH = 32;
 const static int TILE_HEIGHT = 16;
 

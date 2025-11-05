@@ -9,13 +9,13 @@ Tile::Tile(TileType value, Position pos)
   this->pos.y = (pos.x + pos.y) * (TILE_HEIGHT / 2);
   
   // Tile du sol
-  this->wanted_tile[0].x = 32;
-  this->wanted_tile[0].y = 16;
+  this->wanted_tile[0].x = 0;
+  this->wanted_tile[0].y = 0;
   this->wanted_tile[0].w = 32;
   this->wanted_tile[0].h = 16;
 
   // tile du serpent
-  this->wanted_tile[1].x = 0;
+  this->wanted_tile[1].x = 32;
   this->wanted_tile[1].y = 0;
   this->wanted_tile[1].w = 32;
   this->wanted_tile[1].h = 16;

@@ -1,5 +1,4 @@
 #include "headers/game.hpp"
-#include "headers/global.hpp"
 
 Game::Game()
 {
@@ -20,49 +19,33 @@ Game::~Game()
   if (this->i_snake != nullptr) delete this->i_snake;
 }
 
-void Game::play(int direction, SDL_Renderer* renderer, SDL_Texture* tileset)
+void Game::handle_inputs(SDL_Event& event)
 {
-  this->update(direction);
-  this->display(renderer, tileset);
-  //this->handle_inputs();
-}
-
-bool Game::the_game_is_over() { return this->game_over; }
-
-void Game::handle_inputs()
-{
-  /*
-  int ch;
-  switch (ch = getch())
+  switch (event.key.keysym.sym)
   {
-    case KEY_UP:
-      //this->i_snake->move(0);
+    case SDLK_UP:
       this->direction = 0;
       break;
 
-    case KEY_DOWN:
-      //this->i_snake->move(1);
+    case SDLK_DOWN:
       this->direction = 1;
       break;
 
-    case KEY_LEFT:
-      //this->i_snake->move(2);
+    case SDLK_LEFT:
       this->direction = 2;
       break;
 
-    case KEY_RIGHT:
-      //this->i_snake->move(3);
+    case SDLK_RIGHT:
       this->direction = 3;
       break;
 
-    case 27: // ESCAPE
+    case SDLK_ESCAPE:
       this->game_over = true;
       break;
 
     default:
       break;
   }
-  */
 }
 
 void Game::generate_new_apple()
@@ -83,12 +66,13 @@ void Game::generate_new_apple()
   this->p_apple = free_tiles[int_rng(0, (int)(free_tiles.size() - 1))];
 }
 
-void Game::update(int direction)
+//void Game::update(int direction)
+void Game::update()
 {
   this->apple_eaten = false;
 
   // Move the snake
-  this->i_snake->move(direction);
+  this->i_snake->move(this->direction);
 
   std::vector<Position> snake = this->i_snake->get_pos();
   //std::cout << (snake.empty() == true ? "true" : "false") << std::endl;

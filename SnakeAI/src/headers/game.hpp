@@ -24,30 +24,17 @@ class Game
     ~Game();
     
     /**
-     * @brief Méthode permettant de lancer une itération du jeu
-     * @param direction: int, entrée de l'agent d'apprentissage dans le jeu
-     * @param renderer: SDL_Renderer, instance de rendu de la fenêtre de jeu
-     * @param tileset: SDL_Texture, tileset de la carte à afficher
-    */
-    void play(int direction, SDL_Renderer* renderer, SDL_Texture* tileset);
-    
-    /**
      * @brief Méthode mettant à jour la logique de jeu, utile pour entrainer l'agent sans UI
      * @param direction: int, entrée de l'agent d'apprentissage pour le jeu
     */
-    void update(int direction);
+    //void update(int direction);
+    void update();
     
     /**
      * @brief Accesseur de l'état courant du jeu
      * @return std::vector<double>, vecteur contenant les informations dont l'agent a besoin pour s'entrainer, les formates pour l'agent
     */
     std::vector<double> get_game_state();
-
-    /**
-     * @brief Méthode déterminant si le jeu est fini ou non
-     * @return bool, true si le jeu est fini, false sinon
-    */
-    bool the_game_is_over();
     
     /**
      * @brief Méthode permettant de savoir si le serpent a mangé une pomme durant la dernière itération
@@ -61,11 +48,10 @@ class Game
     */
     int get_score();
 
-  private:
     /**
      * @brief Méthode gérant les entrées du jeu
     */
-    void handle_inputs();
+    void handle_inputs(SDL_Event& event);
 
     /**
      * @brief Méthode chargé d'afficher le jeu global
@@ -73,7 +59,11 @@ class Game
      * @param tileset: SDL_Texture, instance du tileset de la carte de jeu
     */
     void display(SDL_Renderer* renderer, SDL_Texture* tileset);
+
+    bool game_over;
     
+  private:
+
     /**
      * @brief Méthode permettant de générer une nouvelle pomme sur la carte
     */
@@ -82,7 +72,6 @@ class Game
     int score;
     time_t start; // heure à laquelle la partie a commencé
 
-    bool game_over; // contient l'état global du jeu
     bool apple_eaten; // vérifie qu'une pomme a été mangé
     
     int direction; // direction du serpent
