@@ -32,11 +32,13 @@ void Game::handle_inputs(SDL_Event& event)
       break;
 
     case SDLK_LEFT:
-      this->direction = 2;
+      //this->direction = 2;
+      this->direction = 3;
       break;
 
     case SDLK_RIGHT:
-      this->direction = 3;
+      //this->direction = 3;
+      this->direction = 2;
       break;
 
     case SDLK_ESCAPE:
@@ -66,7 +68,6 @@ void Game::generate_new_apple()
   this->p_apple = free_tiles[int_rng(0, (int)(free_tiles.size() - 1))];
 }
 
-//void Game::update(int direction)
 void Game::update()
 {
   this->apple_eaten = false;
@@ -101,7 +102,7 @@ void Game::update()
     }
 
     // Update display
-    //this->i_map->set_blank();    
+    this->i_map->set_blank();    
     this->i_map->modify(this->p_apple, t_apple); // On ajoute la pomme sur la carte
     
     // On ajoute le serpent sur la carte

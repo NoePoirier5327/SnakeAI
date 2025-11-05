@@ -40,3 +40,10 @@ void IsometricMap::display(SDL_Renderer *renderer, SDL_Texture *texture)
     for (int colonne = 0; colonne < MAP_WIDTH; colonne++)
       this->map[ligne][colonne]->display(renderer, texture);
 }
+
+void IsometricMap::set_blank()
+{
+  for (int ligne = 0; ligne < MAP_HEIGHT; ligne++)
+    for (int colonne = 0; colonne < MAP_WIDTH; colonne++)
+      this->map[ligne][colonne]->set_type(t_floor);
+}

@@ -43,6 +43,8 @@ class IsometricMap
     */
     void display(SDL_Renderer *renderer, SDL_Texture *texture);
 
+    void set_blank();
+
   private:
     Tile ***map; // carte composée d'instances de tuiles
     int tile_width;
