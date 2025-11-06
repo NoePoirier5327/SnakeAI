@@ -36,8 +36,8 @@ TileType IsometricMap::get_tile(Position& pos)
 void IsometricMap::display(SDL_Renderer *renderer, SDL_Texture *texture)
 {
   // Affichage sur la fenêtre sdl
-  for (int ligne = 0; ligne < MAP_HEIGHT; ligne++)
-    for (int colonne = 0; colonne < MAP_WIDTH; colonne++)
+  for (int ligne = MAP_HEIGHT - 1; ligne >= 0; ligne--)
+    for (int colonne = MAP_WIDTH - 1; colonne >= 0; colonne--)
       this->map[ligne][colonne]->display(renderer, texture);
 }
 

@@ -3,12 +3,12 @@
 #include <vector>
 #include <random>
 
-const static int WIN_WIDTH = 800;
+const static int WIN_WIDTH = 900;
 const static int WIN_HEIGHT = 600;
-const static int MAP_WIDTH = 20;
-const static int MAP_HEIGHT = 20;
-const static int TILE_WIDTH = 32;
-const static int TILE_HEIGHT = 16;
+const static int MAP_WIDTH = 12;
+const static int MAP_HEIGHT = 12;
+const static int TILE_WIDTH = 64;
+const static int TILE_HEIGHT = 32;
 
 /**
  * @brief Fonction permettant la génération d'un nombre aléatoire entre deux bornes

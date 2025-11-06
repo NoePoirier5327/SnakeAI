@@ -30,7 +30,7 @@ int main(int argc, char **argv)
   }
 
   // Création de la fenêtre
-  window = SDL_CreateWindow("Isometric Tile Map", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_SHOWN);
+  window = SDL_CreateWindow("SnakeAI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_SHOWN);
 
   // Vérification de la bonne création de la fenêtre
   if (!window)
@@ -65,27 +65,29 @@ int main(int argc, char **argv)
   
   // Variable de gestion des événements de la fenêtre
   SDL_Event event;
+
+  bool run = true;
   
   // Game loop
-  while (i_game->game_over == false)
+  while (run)
   {
     // Gestion des événements
     while (SDL_PollEvent(&event))
     {
       if (event.type == SDL_QUIT) 
-        i_game->game_over = true;
+        run = false;
 
       if (event.type == SDL_KEYDOWN)
         i_game->handle_inputs(event);
     }
 
-    SDL_Delay(300);
+    SDL_Delay(150);
 
     i_game->update();
 
     // Affichage sur la fenêtre
     // On affiche un rectangle blanc
-    SDL_SetRenderDrawColor(win_renderer, 255, 255, 255, 255); // On met la couleur d'affichage à blanc
+    SDL_SetRenderDrawColor(win_renderer, 0, 0, 0, 255); // On met la couleur d'affichage à blanc
     SDL_RenderClear(win_renderer); // On nettoie la fenêtre de rendu
     SDL_RenderDrawRect(win_renderer, nullptr); // On affiche le fond (un rectangle blanc)
   

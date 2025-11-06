@@ -5,7 +5,7 @@ Tile::Tile(TileType value, Position pos)
   this->type = value;
 
   // Calcule des coordonnées isométriques
-  this->pos.x = ((pos.x - pos.y) * (TILE_WIDTH / 2)) + (WIN_WIDTH / 4);
+  this->pos.x = ((pos.x - pos.y) * (TILE_WIDTH / 2)) + (300);
   this->pos.y = (pos.x + pos.y) * (TILE_HEIGHT / 2);
   
   // Tile du sol
@@ -29,9 +29,8 @@ Tile::Tile(TileType value, Position pos)
 
 void Tile::display(SDL_Renderer *renderer, SDL_Texture *texture)
 {
-  //SDL_Rect rect = {pos_x * this->tile_width, pos_y * this->tile_height, this->tile_width, this->tile_height};
-  //SDL_RenderFillRect(renderer, &rect);
-  SDL_Rect rect = {this->pos.x, this->pos.y, TILE_WIDTH, TILE_HEIGHT};
+  SDL_Rect rect;
+  rect = {this->pos.x, this->pos.y, TILE_WIDTH, TILE_HEIGHT};
   SDL_RenderCopy(renderer, texture, &this->wanted_tile[this->type], &rect);
 }
 
@@ -41,6 +40,6 @@ void Tile::set_type(TileType value) { this->type = value; }
 
 void Tile::set_coords(Position pos)
 {
-  this->pos.x = ((pos.x - pos.y) * (TILE_WIDTH / 2)) + (WIN_WIDTH / 4);
+  this->pos.x = ((pos.x - pos.y) * (TILE_WIDTH / 2)) + (300);
   this->pos.y = (pos.x + pos.y) * (TILE_HEIGHT / 2); 
 }
