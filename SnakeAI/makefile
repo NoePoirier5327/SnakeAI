@@ -1,7 +1,8 @@
 CXX = g++
-LDFLAGS = -lSDL2main -lSDL2 -lSDL2_image -lncurses
+LDFLAGS = -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 INCLDFLAGS = 
-DEBUGFLAGS = -g
+DEBUGFLAGS = -g 
+MEMORYFLAGS = -O1 -fsanitize=address,undefined -fno-omit-frame-pointer
 CXXFLAGS = -Wall -std=c++17
 
 SRCDIR = src

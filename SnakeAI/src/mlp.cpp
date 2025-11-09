@@ -27,7 +27,7 @@ MLP::MLP(std::vector<int>& layers_shape)
 void MLP::train(std::vector<std::vector<double>>& inputs,
                 std::vector<std::vector<double>>& targets,
                 int nb_iter,
-                double learning_rate)
+                float learning_rate)
 {
   std::cout << "Entrainement du réseau sur "<< nb_iter <<" d'itérations." << std::endl;
   
@@ -61,7 +61,7 @@ std::vector<double>& MLP::feed_forward(std::vector<double>& inputs)
   return this->outputs;
 }
 
-void MLP::backward_propagate(std::vector<double>& target, double learning_rate) 
+void MLP::backward_propagate(std::vector<double>& target, float learning_rate) 
 {
   std::vector<std::vector<double>> deltas(this->layers.size());
 

@@ -6,7 +6,8 @@ Game::Game()
   this->i_snake = new Snake();
 
   this->game_over = false;
-
+  
+  this->kill_timer = 0;
   this->score = 0;
   this->start = time(nullptr);
 
@@ -19,8 +20,10 @@ Game::~Game()
   if (this->i_snake != nullptr) delete this->i_snake;
 }
 
-void Game::handle_inputs(SDL_Event& event)
+void Game::handle_inputs(int direction)
 {
+  this->direction = direction;
+  /*
   switch (event.key.keysym.sym)
   {
     case SDLK_UP:
@@ -47,7 +50,7 @@ void Game::handle_inputs(SDL_Event& event)
 
     default:
       break;
-  }
+  }*/
 }
 
 void Game::generate_new_apple()
@@ -59,7 +62,7 @@ void Game::generate_new_apple()
   for (int ligne = 1; ligne < MAP_HEIGHT - 1; ligne++)
     for (int colonne = 1; colonne < MAP_WIDTH - 1; colonne++)
     {
-      temp.x = ligne; temp.y = ligne;
+      temp.x = colonne; temp.y = ligne;
       if (this->i_map->get_tile(temp) == 0) free_tiles.push_back(temp);
     }
 
@@ -70,6 +73,16 @@ void Game::generate_new_apple()
 
 void Game::update()
 {
+  // Si le serpent n'a pas mangé de pomme depuis N itérations de la boucle de jeu, on met fin à la partie
+  if (this->kill_timer > KILL_TIMER_LIMIT) 
+  {
+    this->game_over = true;
+    return;
+  }
+  
+  // Sinon, on incrémente son timer et on continue la fonction
+  this->kill_timer ++;
+
   this->apple_eaten = false;
 
   // Move the snake
@@ -85,8 +98,7 @@ void Game::update()
       this->game_over = true;
   
   // On vérifie si la tête est en dehors de la carte
-  if ((snake[0].x >= 0 && snake[0].x < MAP_WIDTH && (snake[0].y == 0 || snake[0].y == MAP_HEIGHT - 1)) ||
-  (snake[0].y >= 0 && snake[0].y < MAP_HEIGHT && (snake[0].x == 0 || snake[0].x == MAP_WIDTH - 1)))
+  if (snake[0].x < 0 || snake[0].x >= MAP_WIDTH || snake[0].y < 0 || snake[0].y >= MAP_HEIGHT)
     this->game_over = true;
   
   // Si le serpent n'est pas mort, on peut continuer le jeu
@@ -113,42 +125,47 @@ void Game::update()
 
 void Game::display(SDL_Renderer* renderer, SDL_Texture* tileset) { this->i_map->display(renderer, tileset); }
 
-bool Game::the_snake_ate_an_apple() { return this->apple_eaten; }
+bool Game::the_snake_ate_an_apple() 
+{
+  // Si le serpent a mangé une pomme, on réinitialise son temps de vie
+  if (this->apple_eaten) this->kill_timer = 0;
+  return this->apple_eaten; 
+}
+
 int Game::get_score() { return this->score; }
 
 std::vector<double> Game::get_game_state()
 {
-  std::vector<double> game_state; game_state.reserve(31);
-  Position temp = this->i_snake->get_pos()[0];
-  Position temp1 = temp; temp1.x -= 2; temp.y -= 2;
-  Position a;
+  std::vector<double> game_state; game_state.reserve(77);
+
+  Position head = this->i_snake->get_pos()[0]; 
+  Position p;
+  TileType tile;
   
   // On récupère le pov du serpent 5x5
-  for (int l = temp1.y; l < temp1.y + 5; l++)
-    for (int c = temp1.x; c < temp1.x + 5; c++)
+  for (int l = -2; l <= 2; l++)
+    for (int c = -2; c <= 2; c++)
     {
-      a.x = c; a.y = l;
-      game_state.push_back(this->i_map->get_tile(a));
+      p = {head.x + c, head.y + l};
+
+      tile = this->i_map->get_tile(p);
+      game_state.push_back(tile == t_floor ? 1.0 : 0.0);
+      game_state.push_back(tile == t_apple ? 1.0 : 0.0);
+      game_state.push_back(tile == t_snake ? 1.0 : 0.0);
     }
 
-  // On récupère la distance avec la pomme
-  game_state.push_back(sqrt(pow(temp.x - this->p_apple.x, 2) + pow(temp.y - this->p_apple.y, 2)));
+  // On récupère la distance avec la pomme (normalisé entre -1 et 1)
+  game_state.push_back((this->p_apple.x - head.x) / static_cast<double>(MAP_WIDTH));
+  game_state.push_back((this->p_apple.y - head.y) / static_cast<double>(MAP_HEIGHT));
 
-  // On récupère la position du serpent sur la carte
-  game_state.push_back(temp.x);
-  game_state.push_back(temp.y);
-
-  // On récupère la taille de la carte
-  game_state.push_back(MAP_WIDTH);
-  game_state.push_back(MAP_HEIGHT);
-
-  // On récupère le score
-  game_state.push_back(this->score);
-
+  /*
   // On traite les données pour qu'elles soient comprises entre 0 et 1
-  double max_elm = std::max_element(game_state.begin(), game_state.end()) - game_state.begin();
-  for (size_t i = 0; i < game_state.size(); i++)
-    game_state[i] /= max_elm;
+  double max_elm = *std::max_element(game_state.begin(), game_state.end());
+  
+  if (max_elm != 0)
+    for (size_t i = 0; i < game_state.size(); i++)
+      game_state[i] /= max_elm;
+  */
 
   return game_state;
 }

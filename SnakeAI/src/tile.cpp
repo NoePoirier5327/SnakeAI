@@ -5,7 +5,7 @@ Tile::Tile(TileType value, Position pos)
   this->type = value;
 
   // Calcule des coordonnées isométriques
-  this->pos.x = ((pos.x - pos.y) * (TILE_WIDTH / 2)) + (300);
+  this->pos.x = ((pos.x - pos.y) * (TILE_WIDTH / 2)) + (50);
   this->pos.y = (pos.x + pos.y) * (TILE_HEIGHT / 2);
   
   // Tile du sol

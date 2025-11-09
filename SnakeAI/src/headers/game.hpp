@@ -50,8 +50,9 @@ class Game
 
     /**
      * @brief Méthode gérant les entrées du jeu
+     * @param direction: int, direction du snake sur la carte
     */
-    void handle_inputs(SDL_Event& event);
+    void handle_inputs(int direction);
 
     /**
      * @brief Méthode chargé d'afficher le jeu global
@@ -71,6 +72,7 @@ class Game
     
     int score;
     time_t start; // heure à laquelle la partie a commencé
+    int kill_timer;
 
     bool apple_eaten; // vérifie qu'une pomme a été mangé
     
