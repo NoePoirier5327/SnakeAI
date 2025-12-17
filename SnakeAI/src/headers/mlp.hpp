@@ -39,6 +39,26 @@ class MLP
     void backward_propagate(std::vector<double>& target, float learning_rate);
     
     /**
+     * @brief Méthode permettant de copier le contenu du MLP en paramètre dans celui courant
+     * @param mlp: MLP, mlp à copier dans le mlp courant
+    */
+    void copy(MLP& mlp);
+    
+    /**
+     * @brief Accesseur de la forme globale du mlp courant
+     * @return std::vector<int>, forme globale du mlp courant
+    */
+    std::vector<int>& get_net_shape();
+    
+    /**
+     * @brief Accesseur d'une couche i du réseau
+     * @param i: size_t, couche à laquelle on veut accéder
+     * @param layer: Layer, modifier par la méthode, correspond à la couche qu'on voulait, n'est pas modifier si erreur
+     * @return bool, true si aucun problème, false si i est en dehors de l'ensemble de définition des couches du réseau
+    */
+    bool get_layer(size_t &i, Layer &layer);
+    
+    /**
      * @brief Méthode renvoyant une chaine à afficher correspondant à la représentation du réseau
      * @return std::string, chaine de caractère représentant le réseau de neurones
     */
@@ -54,4 +74,6 @@ class MLP
       std::vector<Layer> layers; // Tableau contenant les instances de chaque couche de neurones
       std::vector<double> outputs; // tableau contenant les sorties du réseau
       std::vector<double> old_input; // On sauvegarde les entrées du réseau pour les affichers plus tard
+      
+      std::vector<int> net_shape; // Forme globale du réseau
 };

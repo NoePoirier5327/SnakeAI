@@ -1,5 +1,6 @@
 #include "headers/mlp.hpp"
 #include <algorithm>
+#include <cstddef>
 #include <ctime>
 #include <iostream>
 #include <string>
@@ -19,6 +20,9 @@ MLP::MLP(std::vector<int>& layers_shape)
     this->layers.push_back(Layer(layers_shape[i], inputs_size));
     inputs_size = layers_shape[i];
   }
+
+  // On stocke la forme globale du réseau
+  this->net_shape = layers_shape;
 
   // On alloue la mémoire nécessaire à la taille de la sortie du réseau
   this->outputs.reserve(layers_shape.back());
@@ -99,6 +103,45 @@ void MLP::backward_propagate(std::vector<double>& target, float learning_rate)
     for (size_t j = 0; j < this->layers[l].get_outputs().size(); j++)
       this->layers[l].get_neuron(j).update_weights(inputs, deltas[l][j], learning_rate);
   }
+}
+
+void MLP::copy(MLP& mlp)
+{
+  // On commence par vider le vecteur de couche courant
+  // pour libérer la mémoire qu'elles occupent
+  while (this->layers.size() > 0)
+    this->layers.pop_back();
+
+  // Ensuite, on vide le vecteur contenant la forme globale du réseau
+  while (this->net_shape.size() > 0)
+    this->net_shape.pop_back();
+
+  // On récupère la nouvelle forme du réseau
+  for (size_t i = 0; i < mlp.get_net_shape().size(); ++i)
+    this->net_shape.push_back(mlp.get_net_shape()[i]);
+
+  // On récupère les nouvelles couches du réseau
+  // On a autant de couche que de cases dans le tableau net_shape
+  size_t i = 0;
+  Layer layer = Layer(1, 1);
+
+  while (i < this->net_shape.size() && mlp.get_layer(i, layer) == true)
+    this->layers.push_back(layer);
+}
+
+std::vector<int>& MLP::get_net_shape()
+{
+  return this->net_shape;
+}
+
+bool MLP::get_layer(size_t &i, Layer &layer)
+{
+  // Si l'index sort de l'ensemble de définition du réseau, on renvoie faux et ne fait rien
+  if (i < 0 && i >= this->layers.size()) return false;
+
+  // Sinon, on récupère la couche qu'on veut et on renvoie true
+  layer = this->layers[i];
+  return true;
 }
 
 std::string MLP::display()

@@ -70,8 +70,8 @@ class DQNAgent
   
     std::vector<Episodes>* memory;// Mémoire de l'agent qui sert de banque d'apprentissage pour l'entrainement à long terme
 
-    MLP *mlp;                     // réseau de neurone multicouche associé à l'agent
-    MLP *target_network;          // réseau cible pour stabiliser l'apprentissage
+    MLP mlp;                     // réseau de neurone multicouche associé à l'agent
+    MLP target_network;          // réseau cible pour stabiliser l'apprentissage
 
     int action;                   // dernière action de l'agent
     int nb_action;                // nombre d'action réalisable par l'agent
