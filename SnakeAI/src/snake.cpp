@@ -26,11 +26,11 @@ bool Snake::is_not_opposite_of_last_direction(const Direction &direction)
   return true;
 }
 
-void Snake::move(const Direction &direction)
+void Snake::move()
 {
   Position temp = this->pos[0];
 
-  switch (direction)
+  switch (this->direction)
   {
     case haut:
       temp.y --;
@@ -48,13 +48,16 @@ void Snake::move(const Direction &direction)
       temp.x ++;
       break;
   }
-  
-  // Si la nouvelle direction est l'opposé de la nouvelle, on conserve la précédente
-  if (this->is_not_opposite_of_last_direction(direction))
-    this->direction = direction;
 
   this->pos.pop_back();
   this->pos.insert(this->pos.begin(), temp);
+}
+
+void Snake::set_direction(const Direction &direction)
+{
+  // Si la nouvelle direction est l'opposé de l'ancienne, alors on garde l'ancienne
+  if (this->is_not_opposite_of_last_direction(direction))
+    this->direction = direction;
 }
 
 void Snake::eat_apple()

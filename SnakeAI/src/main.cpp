@@ -66,7 +66,7 @@ int main()
   // Création de la surface de rendu de la fenêtre
   win_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-  // On vérifie qu'on a bien récupérer les surfaces
+  // On vérifie qu'on a bien récupéré les surfaces
   if (!win_renderer)
   {
     std::cerr << "Erreur dans la création du rendu : " << SDL_GetError() << std::endl;
@@ -84,19 +84,19 @@ int main()
   bool run = true;
   
   // Game loop
-  while (run)
+  while (!game->game_over)
   {
     // Gestion des événements
     while (SDL_PollEvent(&event))
     {
       if (event.type == SDL_QUIT) 
-        run = false;
+        game->game_over = true;
 
       if (event.type == SDL_KEYDOWN)
         switch (event.key.keysym.sym)
         {
           case SDLK_ESCAPE:
-            run = false;
+            game->game_over = true;
             break;
 
           case SDLK_UP:

@@ -56,8 +56,11 @@ Game::~Game()
 
 void Game::handle_inputs(const Direction &direction)
 {
+  // On modifie la direction du serpent
   this->direction = direction;
+  this->i_snake->set_direction(direction);
 
+  // On bouge la caméra en fonction de la direction en paramètre
   Position camera_pos, scale;
   camera_pos.x = this->i_map->get_camera()->get_pos_x();
   camera_pos.y = this->i_map->get_camera()->get_pos_y();
@@ -117,28 +120,28 @@ void Game::update()
 {
   this->apple_eaten = false;
 
-  // On le fait se déplacer selon sa dernière direction enregistré
-  this->i_snake->move(this->direction);
+  // On fait se déplacer le serpent
+  this->i_snake->move();
 
-  std::vector<Position> snake = this->i_snake->get_pos();
+  std::vector<Position> snake_pos = this->i_snake->get_pos();
   
   //std::cout << (snake.empty() == true ? "true" : "false") << std::endl;
 
   // On vérifie si le serpent est mort
   // On vérifie si la tête du serpent est dans le corp
-  for (size_t i = 1; i < snake.size(); ++i)
-    if (snake[0].x == snake[i].x && snake[0].y == snake[i].y)
+  for (size_t i = 1; i < snake_pos.size(); ++i)
+    if (snake_pos[0].x == snake_pos[i].x && snake_pos[0].y == snake_pos[i].y)
       this->game_over = true;
   
   // On vérifie si la tête est en dehors de la carte
-  if (snake[0].x < 0 || snake[0].x >= MAP_WIDTH || snake[0].y < 0 || snake[0].y >= MAP_HEIGHT)
+  if (snake_pos[0].x < 0 || snake_pos[0].x >= MAP_WIDTH || snake_pos[0].y < 0 || snake_pos[0].y >= MAP_HEIGHT)
     this->game_over = true;
   
   // Si le serpent n'est pas mort, on peut continuer le jeu
   if (this->game_over == false)
   {
     // Si le serpent mange une pomme, on incrémente son score et en génère une nouvelle
-    if (this->i_map->get_tile(snake[0].x, snake[0].y) == 2)
+    if (this->i_map->get_tile(snake_pos[0].x, snake_pos[0].y) == 2)
     {
       this->i_snake->eat_apple(); // le serpent mange la pomme
       this->i_map->set_tile(this->p_apple.x, this->p_apple.y, '.'); // on la supprime de la carte
@@ -154,8 +157,8 @@ void Game::update()
     this->i_map->set_tile(this->p_apple.x, this->p_apple.y, 'A'); // On ajoute la pomme sur la carte
     
     // On ajoute le serpent sur la carte
-    for (size_t i = 0; i < snake.size(); ++i)
-      this->i_map->set_tile(snake[i].x, snake[i].y, 'S');
+    for (size_t i = 0; i < snake_pos.size(); ++i)
+      this->i_map->set_tile(snake_pos[i].x, snake_pos[i].y, 'S');
   }
 }
 

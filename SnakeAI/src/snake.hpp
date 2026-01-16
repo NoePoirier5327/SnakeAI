@@ -35,10 +35,15 @@ class Snake
     Snake();
     
     /**
-     * @brief Méthode déplaçant le serpent en fonction d'une direction donnée
-     * @param direction: Direction
+     * @brief Méthode déplaçant le serpent en fonction de sa direction courante
     */
-    void move(const Direction &direction);
+    void move();
+
+    /**
+     * @brief Mutateur de la direction du serpent.
+     * @param direction : Direction, nouvelle direction du serpent
+     */
+    void set_direction(const Direction &direction);
 
     /**
      * @brief Méthode permettant de faire grandir le serpent d'une unité de taille
@@ -46,7 +51,7 @@ class Snake
     void eat_apple();
 
     /**
-     * @brief Acceseur du vecteur pôsition du serpent
+     * @brief Accesseur du vecteur pôsition du serpent
      * @return std::vector<Position>&, vecteur contenant les pôsitions des parties du corp du serpent
     */
     std::vector<Position>& get_pos();
