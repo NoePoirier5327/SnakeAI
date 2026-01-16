@@ -123,7 +123,7 @@ int main()
 
     // Affichage sur la fenêtre
     // On affiche un rectangle blanc
-    SDL_SetRenderDrawColor(win_renderer, 0, 0, 0, 255); // On met la couleur d'affichage à blanc
+    SDL_SetRenderDrawColor(win_renderer, 0, 0, 0, 255); // On met la couleur d'affichage à noir
     SDL_RenderClear(win_renderer); // On nettoie la fenêtre de rendu
     SDL_RenderDrawRect(win_renderer, nullptr); // On affiche le fond (un rectangle blanc)
     
