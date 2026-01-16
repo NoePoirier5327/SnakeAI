@@ -1,9 +1,46 @@
 #pragma once
 
-#include "global.hpp"
+/**
+ * Fichier contenant la déclaration du fonctionnement générale d'un neurone artificiel
+ * en 2025
+ * par Noé Poirier
+*/
+
 #include <string>
 #include <cmath>
 #include <vector>
+#include <random>
+
+/**
+ * @brief Fonction d'acitvation des neurones
+ * @param x: double, valeur à activer
+ * @return double, valeur activée
+*/
+double f(double x);
+
+/**
+ * @brief Dérivée de la fonction d'activation des neurone (utilisé pour l'apprentissage en règle général)
+ * @param x: double, valeur à activer
+ * @return double, valeur activée
+*/
+double f_prime(double x);
+
+/**
+ * @brief Fonction permettant la génération d'un nombre aléatoire entre deux bornes
+ * @param min:double, borne minimale pour la génération aléatoire
+ * @param max:double, borne maximale pour la génération aléatoire
+ * @return double, nombre aléatoire généré par la fonction
+*/
+double rng(double min, double max);
+
+/**
+ * @brief Fonction générant un nombre aléatoire entier entre deux bornes entières
+ * @param min: int, borne minimale
+ * @param max: int, borne maximale
+ * @return int, nombre aléatoire généré par la fonction
+*/
+int int_rng(int min, int max);
+
 
 /**
  * @brief Classe gérant le fonctionnement d'un neurone du réseau

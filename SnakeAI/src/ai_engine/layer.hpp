@@ -1,5 +1,11 @@
 #pragma once
 
+/**
+ * Fichier contenant la déclaration d'une couche de neurones artificiel générique
+ * en 2025
+ * par Noé Poirier
+*/
+
 #include "neuron.hpp"
 
 /**

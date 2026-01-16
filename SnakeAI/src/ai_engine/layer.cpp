@@ -1,4 +1,10 @@
-#include "headers/layer.hpp"
+/**
+ * Fichier contenant l'implémentation d'une couche de neurones artificiel générique
+ * en 2025
+ * par Noé Poirier
+*/
+
+#include "layer.hpp"
 
 Layer::Layer(int nb_neurons, int nb_inputs)
 {

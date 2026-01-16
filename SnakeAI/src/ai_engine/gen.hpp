@@ -1,6 +1,11 @@
 #pragma once
 
-#include "game.hpp"
+/**
+ * Fichier contenant la déclaration d'un algorithme génétique
+ * en décembre 2025
+ * par Noé Poirier
+*/
+
 #include "dqnagent.hpp"
 
 /**

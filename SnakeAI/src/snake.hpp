@@ -1,9 +1,27 @@
 #pragma once
 
+/**
+ * Fichier contenant la déclaration d'une classe gérant un Serpent du jeu Snake
+ * en 2025
+ * par Noé Poirier
+*/
+
 #include "global.hpp"
+
 #include <vector>
 #include <cstdlib>
 #include <iostream>
+
+/**
+ * @brief Type énuméré gérant la direction du serpent sur le plan
+*/
+enum Direction
+{
+  haut = 0,
+  bas = 1,
+  gauche = 2,
+  droite = 3
+};
 
 /**
  * @brief Classe permettant de gérer le serpent
@@ -18,9 +36,9 @@ class Snake
     
     /**
      * @brief Méthode déplaçant le serpent en fonction d'une direction donnée
-     * @param direction: int, 0 haut, 1 bas, 2 gauche, 3 droite
+     * @param direction: Direction
     */
-    void move(int direction);
+    void move(const Direction &direction);
 
     /**
      * @brief Méthode permettant de faire grandir le serpent d'une unité de taille
@@ -36,11 +54,11 @@ class Snake
   private:
     /**
      * @brief Méthode permettant de vérifier que la direction en paramètre n'est pas l'opposé de la dernière direction
-     * @param direction: int, direction à vérifier
+     * @param direction: Direction, direction à vérifier
      * @return bool, si true, la direction est l'opposé de la dernière, false sinon
     */
-    bool is_not_opposite_of_last_direction(int direction);
+    bool is_not_opposite_of_last_direction(const Direction &direction);
 
     std::vector<Position> pos; // vecteur contenant les positions des parties du corp du serpent
-    int direction; // dernière direction du serpent
+    Direction direction; // dernière direction du serpent
 };

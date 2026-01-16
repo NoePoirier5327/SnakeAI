@@ -1,11 +1,18 @@
-#include "headers/mlp.hpp"
+/**
+ * Fichier contenant l'implémentation d'un réseau de neurone artificiel multicouche
+ * en 2025
+ * par Noé Poirier
+*/
+
+#include "mlp.hpp"
+
 #include <algorithm>
 #include <cstddef>
 #include <ctime>
 #include <iostream>
 #include <string>
 
-MLP::MLP(std::vector<int>& layers_shape)
+MLP::MLP(const std::vector<int>& layers_shape)
 {
   // Par défaut les entrées du réseau sont à -1
   this->old_input = {-1};

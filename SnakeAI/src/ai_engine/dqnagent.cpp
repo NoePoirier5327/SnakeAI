@@ -1,4 +1,10 @@
-#include "headers/dqnagent.hpp"
+/**
+ * Fichier contenant l'implémentation d'un agent d'apprentissage profond
+ * en 2025
+ * par Noé Poirier
+*/
+
+#include "dqnagent.hpp"
 
 const static float EPSILON_END = 0.05;
 const static float EPSILON_DECAY = 0.95;
@@ -8,8 +14,8 @@ const static int CONVERGENCE_COUNTER = 100;
 
 DQNAgent::DQNAgent(std::vector<int>& net_shape, float lr, float epsilon, float gamma)
 {
-  this->mlp = MLP(net_shape);
-  this->target_network = MLP(net_shape);
+  this->mlp = new MLP(net_shape);
+  this->target_network = new MLP(net_shape);
   
   this->nb_action = net_shape.back();
   this->learning_rate = lr;
@@ -23,8 +29,8 @@ DQNAgent::DQNAgent(std::vector<int>& net_shape, float lr, float epsilon, float g
 
 DQNAgent::~DQNAgent()
 { 
-  //if (this->mlp != nullptr) delete this->mlp; 
-  //if (this->target_network != nullptr) delete this->target_network;
+  if (this->mlp != nullptr) delete this->mlp; 
+  if (this->target_network != nullptr) delete this->target_network;
   delete this->memory;
 }
 
@@ -42,7 +48,7 @@ int DQNAgent::decide(std::vector<double>& state)
   }
 
   // L'agent exploite son expérience
-  std::vector<double> q_values = this->mlp.feed_forward(state);
+  std::vector<double> q_values = this->mlp->feed_forward(state);
   this->action = std::max_element(q_values.begin(), q_values.end()) - q_values.begin();
   return this->action;
 }
@@ -58,8 +64,8 @@ void DQNAgent::train_short_term(std::vector<double>& state, float reward, std::v
     this->memory->push_back({state, next_state, reward, this->action, done});
   }
 
-  std::vector<double> q_values = this->mlp.feed_forward(state);
-  std::vector<double> next_q_values = this->target_network.feed_forward(next_state);
+  std::vector<double> q_values = this->mlp->feed_forward(state);
+  std::vector<double> next_q_values = this->target_network->feed_forward(next_state);
   
   double target = reward;
   if (done == false) // Si on est pas dans l'état final de l'agent, on calcule la pertinence de sa récompense
@@ -68,7 +74,7 @@ void DQNAgent::train_short_term(std::vector<double>& state, float reward, std::v
   std::vector<double> target_vector = q_values;
   target_vector[this->action] = target;
 
-  this->mlp.backward_propagate(target_vector, this->learning_rate);
+  this->mlp->backward_propagate(target_vector, this->learning_rate);
 }
 
 void DQNAgent::train_long_term()
@@ -77,7 +83,7 @@ void DQNAgent::train_long_term()
   if (this->memory->size() < BACH_SIZE) return;
 
   // On copie le résseau courant dans le réseau cible toute les 1000 itérations
-  if (this->iteration % 1000 == 0) this->mlp.copy(this->target_network);
+  if (this->iteration % 10 == 0) *this->target_network = *this->mlp;
 
   // On incrémente le compteur d'essaie de l'agent courant car on utilise cette méthode quand l'agent est mort
   this->iteration++;

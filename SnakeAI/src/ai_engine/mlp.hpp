@@ -1,6 +1,13 @@
 #pragma once
 
+/**
+ * Fichier contenant la déclaration d'une réseau de neurone artificiel multicouche générique
+ * en 2025
+ * par Noé Poirier
+*/
+
 #include "layer.hpp"
+
 #include <vector>
 
 /**
@@ -13,7 +20,7 @@ class MLP
      * @brief Constructeur du réseau de neurones à plusieurs couches
      * @param layers_shape: vector<int>&, contient, pour chaque couches, le nombre de neurones à instancier
     */
-    MLP(std::vector<int>& layers_shape);
+    MLP(const std::vector<int>& layers_shape);
     
     /**
      * @brief Méthode permettant d'entrainer le réseau courant

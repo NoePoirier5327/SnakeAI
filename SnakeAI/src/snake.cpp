@@ -1,50 +1,51 @@
-#include "headers/snake.hpp"
+/**
+ * Fichier contenant l'implémentation du serpent du jeu snake
+ * en 2025
+ * par Noé Poirier
+*/
+
+#include "snake.hpp"
+
+const static Direction DIRECTIONS[4] = {haut, bas, gauche, droite};
 
 Snake::Snake()
 {
-  Position temp;
-  //temp.x = (rand() % (width - 2)) + 1;
-  //temp.y = (rand() % (height - 2)) + 1;
-  temp.x = int_rng(1, MAP_WIDTH-1);
-  temp.y = int_rng(1, MAP_HEIGHT-1);
+  // On place le serpent n'importe où sur la carte
+  this->pos.push_back({(rand() % (MAP_WIDTH - 1)) + 1, (rand() % (MAP_HEIGHT - 1)) + 1});
 
-  this->pos.push_back(temp);
-  //this->direction = (rand() % (4));
-  this->direction = int_rng(0, 3);
+  // On définit sa première direction de manière aléatoire
+  this->direction = DIRECTIONS[rand() % 4];
 }
 
-bool Snake::is_not_opposite_of_last_direction(int direction)
+bool Snake::is_not_opposite_of_last_direction(const Direction &direction)
 {
-  if (direction == 0 && this->direction == 1) return false;
-  if (direction == 1 && this->direction == 0) return false;
-  if (direction == 2 && this->direction == 3) return false;
-  if (direction == 3 && this->direction == 2) return false;
+  if (direction == haut && this->direction == bas) return false;
+  if (direction == bas && this->direction == haut) return false;
+  if (direction == gauche && this->direction == droite) return false;
+  if (direction == droite && this->direction == gauche) return false;
   return true;
 }
 
-void Snake::move(int direction)
+void Snake::move(const Direction &direction)
 {
   Position temp = this->pos[0];
 
-  switch (this->direction)
+  switch (direction)
   {
-    case 0: // Haut
+    case haut:
       temp.y --;
       break;
 
-    case 1: // Bas
+    case bas:
       temp.y ++;
       break;
 
-    case 2: // Gauche
+    case gauche:
       temp.x --;
       break;
 
-    case 3: // Droite
+    case droite:
       temp.x ++;
-      break;
-
-    default:
       break;
   }
   
@@ -62,23 +63,20 @@ void Snake::eat_apple()
 
   switch (this->direction)
   {
-    case 0:
+    case haut:
       temp.y ++;
       break;
 
-    case 1:
+    case bas:
       temp.y --;
       break;
 
-    case 2:
+    case gauche:
       temp.x ++;
       break;
 
-    case 3:
+    case droite:
       temp.x --;
-      break;
-
-    default:
       break;
   }
 
