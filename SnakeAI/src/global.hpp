@@ -10,8 +10,8 @@
 #include <random>
 
 // Utilisé dans snake.cpp et main.cpp, d'où sa place ici
-const static int MAP_WIDTH = 3;
-const static int MAP_HEIGHT = 2;
+const static int MAP_WIDTH = 6;
+const static int MAP_HEIGHT = 6;
 
 // Utilisé dans main.cpp et game.cpp, d'où sa place ici
 const static int WIN_WIDTH = 500;

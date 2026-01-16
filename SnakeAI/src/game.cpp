@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cstdlib>
 
-Game::Game(const int &map_width, const int &map_height, SDL_Renderer *renderer)
+Game::Game(SDL_Renderer *renderer)
 {
   // On charge la carte et le serpent
   this->i_map = new IsometricEngine();
@@ -22,14 +22,14 @@ Game::Game(const int &map_width, const int &map_height, SDL_Renderer *renderer)
   this->i_map->set_scale(32, 16);
 
   // On charge la carte vide
-  this->empty_map.reserve(map_height);
+  this->empty_map.reserve(MAP_HEIGHT);
   std::vector<char> line;
-  line.reserve(map_width);
+  line.reserve(MAP_WIDTH);
 
-  for (int i = 0; i < map_width; ++i)
+  for (int i = 0; i < MAP_WIDTH; ++i)
     line.push_back('.');
 
-  for (int i = 0; i < map_height; ++i)
+  for (int i = 0; i < MAP_HEIGHT; ++i)
     this->empty_map.push_back(line);
 
   this->i_map->set_as_new_map(this->empty_map);
@@ -49,7 +49,7 @@ Game::Game(const int &map_width, const int &map_height, SDL_Renderer *renderer)
 
   // Ensuite, on calcule combien de tuiles il y a sur la diagonale en partant du haut à gauche de la carte
   int n = 0;
-  while (n < map_width && this->i_map->get_tile(n, n) != '\n') n++;
+  while (n < MAP_WIDTH && this->i_map->get_tile(n, n) != '\n') n++;
 
   this->i_map->get_camera()->set_pos(-this->i_map->get_x_scale() + (0.5 * WIN_WIDTH), -(n * this->i_map->get_y_scale()) + (0.5 *WIN_HEIGHT));
   this->i_map->get_camera()->set_zoom(2);
@@ -66,36 +66,6 @@ void Game::handle_inputs(const Direction &direction)
   // On modifie la direction du serpent
   this->direction = direction;
   this->i_snake->set_direction(direction);
-
-  // On bouge la caméra en fonction de la direction en paramètre
-  Position camera_pos, scale;
-  camera_pos.x = this->i_map->get_camera()->get_pos_x();
-  camera_pos.y = this->i_map->get_camera()->get_pos_y();
-  scale.x = this->i_map->get_x_scale();
-  scale.y = this->i_map->get_y_scale();
-  
-  switch (this->direction)
-  {
-    case haut:
-      //this->i_map->get_camera()->set_pos(camera_pos.x - scale.x, camera_pos.y + scale.y);
-      this->i_map->get_camera()->set_pos_y(camera_pos.y + scale.y);
-      break;
-
-    case bas:
-      //this->i_map->get_camera()->set_pos(camera_pos.x + scale.x, camera_pos.y - scale.y);
-      this->i_map->get_camera()->set_pos_y(camera_pos.y - scale.y);
-      break;
-
-    case gauche:
-      //this->i_map->get_camera()->set_pos(camera_pos.x + scale.x, camera_pos.y + scale.y);
-      this->i_map->get_camera()->set_pos_x(camera_pos.x + scale.x);
-      break;
-
-    case droite:
-      //this->i_map->get_camera()->set_pos(camera_pos.x - scale.x, camera_pos.y - scale.y);
-      this->i_map->get_camera()->set_pos_x(camera_pos.x - scale.x);
-      break;
-  }
 }
 
 void Game::generate_new_apple()
@@ -152,7 +122,7 @@ void Game::update()
   if (this->game_over == false)
   {
     // Si le serpent mange une pomme, on incrémente son score et en génère une nouvelle
-    if (this->i_map->get_tile(snake_pos[0].x, snake_pos[0].y) == 2)
+    if (this->i_map->get_tile(snake_pos[0].x, snake_pos[0].y) == 'A')
     {
       this->i_snake->eat_apple(); // le serpent mange la pomme
       this->i_map->set_tile(this->p_apple.x, this->p_apple.y, '.'); // on la supprime de la carte

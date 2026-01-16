@@ -73,7 +73,7 @@ int main()
     return 1;
   }
 
-  Game *game = new Game(MAP_WIDTH, MAP_HEIGHT, win_renderer);
+  Game *game = new Game(win_renderer);
   
   // Variable de gestion des événements de la fenêtre
   SDL_Event event;
@@ -83,6 +83,8 @@ int main()
   // Game loop
   while (run)
   {
+    SDL_Delay(500);
+
     // Gestion des événements
     while (SDL_PollEvent(&event))
     {

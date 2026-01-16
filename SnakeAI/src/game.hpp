@@ -23,11 +23,9 @@ class Game
   public:
     /**
      * @brief Constructeur de la classe Game, initialise le jeu
-     * @param map_width: int, largeur de la carte à charger
-     * @param map_height: int, hauteur de la carte à charger
      * @param renderer: SDL_Renderer, fenêtre de rendue pour laquelle charger la carte
     */
-    Game(const int &map_width, const int &map_height, SDL_Renderer *renderer);
+    Game(SDL_Renderer *renderer);
 
     /**
      * @brief Destructeur de la classe Game
