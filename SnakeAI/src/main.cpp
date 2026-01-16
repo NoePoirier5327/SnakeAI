@@ -13,9 +13,6 @@
 #include <iostream>
 #include <ctime>
 
-const static int WIN_WIDTH = 480;
-const static int WIN_HEIGHT = 300;
-
 int main()
 {
   // On initialise la graine aléatoire sur l'heure actuelle
@@ -84,19 +81,19 @@ int main()
   bool run = true;
   
   // Game loop
-  while (!game->game_over)
+  while (run)
   {
     // Gestion des événements
     while (SDL_PollEvent(&event))
     {
       if (event.type == SDL_QUIT) 
-        game->game_over = true;
+        run = false;
 
       if (event.type == SDL_KEYDOWN)
         switch (event.key.keysym.sym)
         {
           case SDLK_ESCAPE:
-            game->game_over = true;
+            run = false;
             break;
 
           case SDLK_UP:

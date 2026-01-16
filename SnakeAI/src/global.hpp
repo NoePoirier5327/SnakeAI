@@ -9,8 +9,14 @@
 #include <vector>
 #include <random>
 
-const static int MAP_WIDTH = 10;
-const static int MAP_HEIGHT = 10;
+// Utilisé dans snake.cpp et main.cpp, d'où sa place ici
+const static int MAP_WIDTH = 3;
+const static int MAP_HEIGHT = 2;
+
+// Utilisé dans main.cpp et game.cpp, d'où sa place ici
+const static int WIN_WIDTH = 500;
+const static int WIN_HEIGHT = 400;
+
 const static int EXPLORATION_LIMIT = 10000;
 
 /**

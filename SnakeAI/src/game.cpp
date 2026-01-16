@@ -18,10 +18,6 @@ Game::Game(const int &map_width, const int &map_height, SDL_Renderer *renderer)
   this->i_map->add_texture_shape('A', {0, 32, 32, 32});
   this->i_map->add_texture_shape('S', {32, 0, 32, 24});
 
-  // On charge la configuration de la caméra
-  this->i_map->get_camera()->set_pos(200, 50);
-  this->i_map->get_camera()->set_zoom(2);
-
   // On charge l'échelle de rendue des textures isométriques
   this->i_map->set_scale(32, 16);
 
@@ -46,6 +42,17 @@ Game::Game(const int &map_width, const int &map_height, SDL_Renderer *renderer)
   // On génère une nouvelle pomme pour le jeu
   this->generate_new_apple();
   this->i_map->set_tile(this->p_apple.x, this->p_apple.y, 'A');
+
+  // On charge la configuration de la caméra qu'on centre sur le serpent
+  // On commence par récupérer la position de la tête du serpent car on centre la caméra sur ce-dernier
+  Position snake_head = this->i_snake->get_pos().front();
+
+  // Ensuite, on calcule combien de tuiles il y a sur la diagonale en partant du haut à gauche de la carte
+  int n = 0;
+  while (n < map_width && this->i_map->get_tile(n, n) != '\n') n++;
+
+  this->i_map->get_camera()->set_pos(-this->i_map->get_x_scale() + (0.5 * WIN_WIDTH), -(n * this->i_map->get_y_scale()) + (0.5 *WIN_HEIGHT));
+  this->i_map->get_camera()->set_zoom(2);
 }
 
 Game::~Game()
@@ -70,19 +77,23 @@ void Game::handle_inputs(const Direction &direction)
   switch (this->direction)
   {
     case haut:
-      this->i_map->get_camera()->set_pos(camera_pos.x - scale.x, camera_pos.y + scale.y);
+      //this->i_map->get_camera()->set_pos(camera_pos.x - scale.x, camera_pos.y + scale.y);
+      this->i_map->get_camera()->set_pos_y(camera_pos.y + scale.y);
       break;
 
     case bas:
-      this->i_map->get_camera()->set_pos(camera_pos.x + scale.x, camera_pos.y - scale.y);
+      //this->i_map->get_camera()->set_pos(camera_pos.x + scale.x, camera_pos.y - scale.y);
+      this->i_map->get_camera()->set_pos_y(camera_pos.y - scale.y);
       break;
 
     case gauche:
-      this->i_map->get_camera()->set_pos(camera_pos.x + scale.x, camera_pos.y + scale.y);
+      //this->i_map->get_camera()->set_pos(camera_pos.x + scale.x, camera_pos.y + scale.y);
+      this->i_map->get_camera()->set_pos_x(camera_pos.x + scale.x);
       break;
 
     case droite:
-      this->i_map->get_camera()->set_pos(camera_pos.x - scale.x, camera_pos.y - scale.y);
+      //this->i_map->get_camera()->set_pos(camera_pos.x - scale.x, camera_pos.y - scale.y);
+      this->i_map->get_camera()->set_pos_x(camera_pos.x - scale.x);
       break;
   }
 }
@@ -112,7 +123,7 @@ void Game::generate_new_apple()
     return;
   }
   // On tire un nombre au hasard entre 0 et taille de tab - 1
-  // et on attribue la position associé à la pomme
+  // et on attribue la position associée à la pomme.
   this->p_apple = free_tiles[rand() % n];
 }
 
