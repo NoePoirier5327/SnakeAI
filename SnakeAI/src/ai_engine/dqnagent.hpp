@@ -32,8 +32,13 @@ class DQNAgent
      * @param lr: float, taux d'apprentissage de l'agent, par défaut 0.01
      * @param epsilon: float, taux d'exploration, par défaut à 1.0
      * @param gamma: float, taux de pertinence des récompenses, par défaut 0.95
+     * @param batch_size: int, taille de l'échantillon d'entrainement, par défaut à 256
+     * @param max_memory_size: int, taille maximale de la mémoire d'actions globale, par défaut à 100000
+     * @param epsilon_decay: float, taux de baisse d'epsilon dans le temps, par défaut à 0.95
+     * @param epsilon_end: float, valeur limite d'epsilon pour l'algorithme epsilon decay, par défaut à 0.05
+     * @param convergence_counter: int, valeur empêchant epsilon de converger trop vite, par défaut à 100
     */
-    DQNAgent(std::vector<int>& net_shape, float lr = 0.001, float epsilon = 1.0, float gamma = 0.95);
+    DQNAgent(const std::vector<int>& net_shape, const float &lr = 0.001, const float &epsilon = 1.0, const float &gamma = 0.95, const int &batch_size = 256, const int &max_memory_size = 100000, const float &epsilon_decay = 0.95, const float &epsilon_end = 0.05, const int &convergence_counter = 100);
     
     /**
      * @brief Destructeur de l'agent courant
@@ -68,18 +73,30 @@ class DQNAgent
     */
     int get_current_iteration();
 
+    /**
+     * @brief Mutateur de la taille de l'échantillon mémoire sur lequel entrainer l'agent
+     * @param batch_size : int, nouvelle taille d'échantillon d'entrainement
+     */
+    void set_batch_size(const int &batch_size);
+
   private:  
-    float learning_rate;          // taux d'apprentissage du réseau de neurone
-    float epsilon;                // taux facteur décisionnel de l'agent
-    float gamma;                  // taux de perinence des récompenses
+    float learning_rate;            // taux d'apprentissage du réseau de neurone
+    float epsilon;                  // taux facteur décisionnel de l'agent
+    float gamma;                    // taux de pertinence des récompenses
+
+    float epsilon_end;              // valeur limite atteignable par l'algorithme epsilon_decay
+    float epsilon_decay;            // taux de baisse d'epsilon dans le temps
+    int convergence_counter;        // valeur permettant de gérer la vitesse de baisse d'epsilon dans le temps
     
     int iteration;
   
-    std::vector<Episodes>* memory;// Mémoire de l'agent qui sert de banque d'apprentissage pour l'entrainement à long terme
+    std::vector<Episodes>* memory;  // Mémoire de l'agent qui sert de banque d'apprentissage pour l'entrainement à long terme
+    int batch_size;                 // Taille de l'échantillon mémoire sur lequel entrainer l'agent courant
+    int max_memory_size;            // Taille max de la mémoire d'actions
 
-    MLP *mlp;                     // réseau de neurone multicouche associé à l'agent
-    MLP *target_network;          // réseau cible pour stabiliser l'apprentissage
+    MLP *mlp;                       // réseau de neurone multicouche associé à l'agent
+    MLP *target_network;            // réseau cible pour stabiliser l'apprentissage
 
-    int action;                   // dernière action de l'agent
-    int nb_action;                // nombre d'action réalisable par l'agent
+    int action;                     // dernière action de l'agent
+    int nb_action;                  // nombre d'actions réalisable par l'agent
 };

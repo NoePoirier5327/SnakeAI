@@ -6,13 +6,7 @@
 
 #include "dqnagent.hpp"
 
-const static float EPSILON_END = 0.05;
-const static float EPSILON_DECAY = 0.95;
-const static int BACH_SIZE = 256;
-const static int MAX_MEMORY_SIZE = 100000;
-const static int CONVERGENCE_COUNTER = 100;
-
-DQNAgent::DQNAgent(std::vector<int>& net_shape, float lr, float epsilon, float gamma)
+DQNAgent::DQNAgent(const std::vector<int>& net_shape, const float &lr, const float &epsilon, const float &gamma, const int &batch_size, const int &max_memory_size, const float &epsilon_decay, const float &epsilon_end, const int &convergence_counter)
 {
   this->mlp = new MLP(net_shape);
   this->target_network = new MLP(net_shape);
@@ -25,6 +19,12 @@ DQNAgent::DQNAgent(std::vector<int>& net_shape, float lr, float epsilon, float g
   this->iteration = 1;
 
   this->memory = new std::vector<Episodes>;
+  this->batch_size = batch_size;
+  this->max_memory_size = max_memory_size;
+
+  this->epsilon_decay = epsilon_decay;
+  this->epsilon_end = epsilon_end;
+  this->convergence_counter = convergence_counter;
 }
 
 DQNAgent::~DQNAgent()
@@ -37,8 +37,8 @@ DQNAgent::~DQNAgent()
 int DQNAgent::decide(std::vector<double>& state)
 {
   // On modifie epsilon au fur et à mesure du temps toute les 100 itérations pour éviter qu'il converge trop vite
-  if (this->iteration % CONVERGENCE_COUNTER == 0)
-    this->epsilon = std::max(EPSILON_END, static_cast<float>(this->epsilon - pow(10, -5)));
+  if (this->iteration % this->convergence_counter == 0)
+    this->epsilon = std::max(this->epsilon_end, static_cast<float>(this->epsilon - pow(10, -5)));
 
   // L'agent explore
   if (rng(0.0, 1.0) < this->epsilon)
@@ -57,8 +57,8 @@ void DQNAgent::train_short_term(std::vector<double>& state, float reward, std::v
 {
   if (store_memory)
   {
-    // Si on dépasse la mémoire autorisé pour la mémoire de l'agent, on supprime son premier élément
-    if (this->memory->size() >= MAX_MEMORY_SIZE) this->memory->erase(this->memory->begin());
+    // Si on dépasse la mémoire autorisée pour la mémoire de l'agent, on supprime son premier élément
+    if (this->memory->size() >= this->max_memory_size) this->memory->erase(this->memory->begin());
 
     // On récupère les paramètres qu'on stocks dans la mémoire de l'agent
     this->memory->push_back({state, next_state, reward, this->action, done});
@@ -80,12 +80,12 @@ void DQNAgent::train_short_term(std::vector<double>& state, float reward, std::v
 void DQNAgent::train_long_term()
 {
   // Si on a pas assez d'élément pour l'entrainement à long terme on ne fait rien
-  if (this->memory->size() < BACH_SIZE) return;
+  if (this->memory->size() < this->batch_size) return;
 
   // On copie le résseau courant dans le réseau cible toute les 1000 itérations
   if (this->iteration % 10 == 0) *this->target_network = *this->mlp;
 
-  // On incrémente le compteur d'essaie de l'agent courant car on utilise cette méthode quand l'agent est mort
+  // On incrémente le compteur d'essai de l'agent courant car on utilise cette méthode quand l'agent est mort
   this->iteration++;
 
   static std::random_device rd;
@@ -93,7 +93,7 @@ void DQNAgent::train_long_term()
 
   // Sinon, on récupère un vecteur d'éléments sur lequel entrainer l'agent
   std::vector<Episodes> bach;
-  std::sample(this->memory->begin(), this->memory->end(), std::back_inserter(bach), BACH_SIZE, gen);
+  std::sample(this->memory->begin(), this->memory->end(), std::back_inserter(bach), this->batch_size, gen);
   
   // Puis, on l'entraine
   for (size_t i = 0; i < bach.size(); ++i)
@@ -104,3 +104,4 @@ void DQNAgent::train_long_term()
 }
 
 int DQNAgent::get_current_iteration() { return this->iteration; }
+void DQNAgent::set_batch_size(const int &batch_size) { this->batch_size = batch_size; }
