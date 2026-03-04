@@ -83,7 +83,7 @@ int main()
   // Game loop
   while (run)
   {
-    SDL_Delay(500);
+    SDL_Delay(400);
 
     // Gestion des événements
     while (SDL_PollEvent(&event))
