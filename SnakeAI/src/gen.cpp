@@ -10,20 +10,6 @@
 #include <SDL2/SDL_render.h>
 #include <cstdlib>
 
-// @brief Représente les paramètres d'un agent d'apprentissage
-struct AgentParams
-{
-  std::vector<int> net_shape;
-  float learning_rate;
-  float epsilon;
-  float gamma;
-  int batch_size;
-  int memory_size;
-  float epsilon_decay;
-  float epsilon_end;
-  int convergence_counter;
-};
-
 const static Direction DIRECTIONS[4] = {haut, bas, gauche, droite};
 
 /**
@@ -160,7 +146,7 @@ void play_one_time(const std::vector<Game*> &environnements, const std::vector<D
   }
 }
 
-void genetic_algorithm(std::vector<int> &net_shape, float &learning_rate, float &epsilon, float &gamma, int &batch_size, int &memory_size, float &epsilon_decay, float &epsilon_end, int &convergence_counter, int population, int nb_gen, int &best_score, int &gen_best_score, SDL_Renderer *renderer)
+AgentParams genetic_algorithm(const int &population, const int &nb_gen, SDL_Renderer *renderer)
 {
   // On commence par créer la première population d'agents d'apprentissage avec des paramètres d'entrées totalement aléatoires
   // ainsi que leurs environnements d'apprentissage associés
