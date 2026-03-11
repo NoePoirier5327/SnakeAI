@@ -109,6 +109,57 @@ int index_of_best_agent_in_population(const std::vector<Game *> &environnements)
   return (environnements.size() <= 0 ? -1 : index);
 }
 
+/**
+ * @brief Fonction permettant aux agents en paramètre de jouer un tour dans leurs environnements respectifs.
+ * @param environnements : std::vector<Game*>, environnements dans lesquelles les agents vont jouer.
+ * @param agents : std::vector<DQNAgent*>, agents qui vont jouer dans leurs environnements respectifs.
+ * @param population : int, taille de la population de joueur
+ * @param nb_enable : int, nombre d'agents actifs parmis la population de joueur
+ * @param actifs : std::map<int, bool>, permet de savoir si l'agent courant est atifs ou non
+*/
+void play_one_time(const std::vector<Game*> &environnements, const std::vector<DQNAgent*> &agents, const int &population, int &nb_enable, std::map<int, bool> &actifs)
+{
+  for (int i = 0; i < population; ++i)
+  {
+    // Si le jeu est fini pour l'agent courant et qu'il est encore actif,
+    // Alors, on le désactive et baisse le compteur d'agents actifs
+    if (environnements[i]->game_over == true && actifs[i] == true)
+    {
+      nb_enable --;
+      actifs[i] = false;
+    }
+
+    // Sinon, on fait se dérouler un tour normalement
+    if (!environnements[i]->game_over)
+    {
+      // 1. On récupère l'état courant et fait décider l'agent d'apprentissage
+      std::vector<double> state = environnements[i]->get_game_state();
+      environnements[i]->handle_inputs(DIRECTIONS[agents[i]->decide(state)]);
+
+      // 2. On met à jour la logique de l'environnement courant
+      environnements[i]->update();
+
+      // 3. On le récompense en fonction des conséquences de sa dernière action
+      std::vector<double> next_state = environnements[i]->get_game_state();
+
+      // S'il a mangé une pomme, on le récompense de 10 points
+      if (environnements[i]->the_snake_ate_an_apple())
+        agents[i]->train_short_term(state, 10.0, next_state, environnements[i]->game_over);
+
+      // S'il est mort, on le sanctionne de 1 point et l'entraine à long terme
+      else if (environnements[i]->game_over)
+      {
+        agents[i]->train_short_term(state, -1, next_state, environnements[i]->game_over);
+        agents[i]->train_long_term();
+      }
+
+      // S'il n'a rien fait, on le sanctionne de 0.1 point
+      else
+        agents[i]->train_short_term(state, -0.1, next_state, environnements[i]->game_over);
+    }
+  }
+}
+
 void genetic_algorithm(std::vector<int> &net_shape, float &learning_rate, float &epsilon, float &gamma, int &batch_size, int &memory_size, float &epsilon_decay, float &epsilon_end, int &convergence_counter, int population, int nb_gen, int &best_score, int &gen_best_score, SDL_Renderer *renderer)
 {
   // On commence par créer la première population d'agents d'apprentissage avec des paramètres d'entrées totalement aléatoires
@@ -126,47 +177,8 @@ void genetic_algorithm(std::vector<int> &net_shape, float &learning_rate, float 
 
     // On fait jouer les agents dans leurs environnements tant qu'ils ne sont pas tous morts
     while (nb_actifs > 0)
-    {
-      for (int i = 0; i < population; ++i)
-      {
-        // Si le jeu est fini pour l'agent courant et qu'il est encore actif,
-        // Alors, on le désactive et baisse le compteur d'agents actifs
-        if (environnments[i]->game_over == true && actifs[i] == true)
-        {
-          nb_actifs --;
-          actifs[i] = false;
-        }
+      play_one_time(environnments, agents, population, nb_actifs, actifs);
 
-        // Sinon, on fait se dérouler un tour normalement
-        if (!environnments[i]->game_over)
-        {
-          // 1. On récupère l'état courant et fait décider l'agent d'apprentissage
-          std::vector<double> state = environnments[i]->get_game_state();
-          environnments[i]->handle_inputs(DIRECTIONS[agents[i]->decide(state)]);
-
-          // 2. On met à jour la logique de l'environnement courant
-          environnments[i]->update();
-
-          // 3. On le récompense en fonction des conséquences de sa dernière action
-          std::vector<double> next_state = environnments[i]->get_game_state();
-
-          // S'il a mangé une pomme, on le récompense de 10 points
-          if (environnments[i]->the_snake_ate_an_apple())
-            agents[i]->train_short_term(state, 10.0, next_state, environnments[i]->game_over);
-
-          // S'il est mort, on le sanctionne de 1 point et l'entraine à long terme
-          else if (environnments[i]->game_over)
-          {
-            agents[i]->train_short_term(state, -1, next_state, environnments[i]->game_over);
-            agents[i]->train_long_term();
-          }
-
-          // S'il n'a rien fait, on le sanctionne de 0.1 point
-          else
-            agents[i]->train_short_term(state, -0.1, next_state, environnments[i]->game_over);
-        }
-      }
-    }
 
     // Maintenant, on détermine l'agent aillant fait le meilleur score
     int best_agent_index = index_of_best_agent_in_population(environnments);
@@ -179,6 +191,7 @@ void genetic_algorithm(std::vector<int> &net_shape, float &learning_rate, float 
 
     // Enfin, on applique la notion d'algorithme génétique pour créer la nouvelle population
     // On détermine les paramètres de création de la nouvelle population
+    /*
     AgentParams params[population];
     for (int i = 0; i < population; ++i)
     {
@@ -192,6 +205,7 @@ void genetic_algorithm(std::vector<int> &net_shape, float &learning_rate, float 
       params[i].epsilon_end = (int_rng(0, 1) == 0 ? epsilons_end[best_agent_index] : epsilons_end[random_agent_index]);
       params[i].convergence_counter = (int_rng(0, 1) == 0 ? convergence_counters[best_agent_index] : convergence_counters[random_agent_index]);
     }
+       */
 
     // On applique les nouveaux paramètres en recréant une population
     for (int i = 0; i < population; ++i)

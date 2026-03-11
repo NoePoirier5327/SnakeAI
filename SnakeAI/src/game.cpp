@@ -13,7 +13,7 @@ Game::Game(SDL_Renderer *renderer)
   this->score = 0;
 
   // On charge les textures
-  this->i_map->load_texture_from_file("../res/isometric_snake.png", renderer);
+  this->i_map->load_texture_from_file("./res/isometric_snake.png", renderer);
   this->i_map->add_texture_shape('.', {0, 0, 32, 16});
   this->i_map->add_texture_shape('A', {0, 32, 32, 32});
   this->i_map->add_texture_shape('S', {32, 0, 32, 24});
