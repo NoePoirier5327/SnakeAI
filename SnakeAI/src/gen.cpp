@@ -62,6 +62,64 @@ std::vector<AgentParams> generate_random_population(std::vector<DQNAgent *> &age
 }
 
 /**
+ * @brief Fonction chargé de créer une population d'agent associé à des environnements de jeu à partir des paramètres en paramètres.
+ * @param agents : std::vector<DQNAgent*>, tableau modifié pour avoir la nouvelle population d'agents
+ * @param environnements, std::vector<Game*>, tableau modifié pour avoir les nouveaux environnements de jeu pour les IA
+ * @param params : std::vector<AgentParams>, paramètres de création pour la nouvelle population d'agents
+ * @param renderer : SDL_Renderer, fenêtre d'affichage des environnements
+*/
+void generate_population_with_params(std::vector<DQNAgent*> &agents, std::vector<Game*> &environnements, const std::vector<AgentParams> &params, SDL_Renderer *renderer)
+{
+  size_t n = params.size();
+  for (size_t i = 0; i < n; ++i)
+  {
+    if (agents.size() < n)
+      agents.push_back(new DQNAgent(params[i].net_shape, params[i].learning_rate, params[i].epsilon, params[i].gamma, params[i].batch_size, params[i].memory_size, params[i].epsilon_decay, params[i].epsilon_end, params[i].convergence_counter));
+    else if (agents[i] != nullptr)
+    {
+      delete agents[i];
+      agents[i] = new DQNAgent(params[i].net_shape, params[i].learning_rate, params[i].epsilon, params[i].gamma, params[i].batch_size, params[i].memory_size, params[i].epsilon_decay, params[i].epsilon_end, params[i].convergence_counter);
+    }
+    else
+       agents[i] = new DQNAgent(params[i].net_shape, params[i].learning_rate, params[i].epsilon, params[i].gamma, params[i].batch_size, params[i].memory_size, params[i].epsilon_decay, params[i].epsilon_end, params[i].convergence_counter);
+
+    if (environnements.size() < n)
+      environnements.push_back(new Game(renderer));
+    else if (environnements[i] != nullptr)
+    {
+      delete environnements[i];
+      environnements[i] = new Game(renderer);
+    }
+    else
+       environnements[i] = new Game(renderer);
+  }
+}
+
+/**
+ * @brief Fonction permettant de créer un nouvelle ensemble de paramètres à partir duquel on va créer une nouvelle population à partir des indexs du meilleur agent et d'un agent aléatoire.
+ * @param i1: int, index du meilleur agent ou de l'agent aléatoire (l'ordre n'a pas d'incidence).
+ * @param i2: int, pareille ici
+*/
+void combine_params(std::vector<AgentParams> &params, const int &i1, const int &i2)
+{
+  for (size_t i = 0; i < params.size(); ++i)
+  {
+    if (i != i1 || i != i2)
+    {
+      params[i].net_shape = (int_rng(0, 1) == 0 ? params[i1].net_shape : params[i2].net_shape);
+      params[i].learning_rate = (int_rng(0, 1) == 0 ? params[i1].learning_rate : params[i2].learning_rate);
+      params[i].epsilon = (int_rng(0, 1) == 0 ? params[i1].epsilon : params[i2].epsilon);
+      params[i].gamma = (int_rng(0, 1) == 0 ? params[i1].gamma : params[i2].gamma);
+      params[i].batch_size = (int_rng(0, 1) == 0 ? params[i1].batch_size : params[i2].batch_size);
+      params[i].memory_size = (int_rng(0, 1) == 0 ? params[i1].memory_size : params[i2].memory_size);
+      params[i].epsilon_decay = (int_rng(0, 1) == 0 ? params[i1].epsilon_decay : params[i2].epsilon_decay);
+      params[i].epsilon_end = (int_rng(0, 1) == 0 ? params[i1].epsilon_end : params[i2].epsilon_end);
+      params[i].convergence_counter = (int_rng(0, 1) == 0 ? params[i1].convergence_counter : params[i2].convergence_counter);
+    }
+  }
+}
+
+/**
  * @brief Fonction générant les environnements dans lesquelles les agents vont s'entrainer
  * @param population: int, nombre d'environnements à générer
  * @param renderer : SDL_Renderer, fenêtre d'affichage des environnements
@@ -154,6 +212,7 @@ AgentParams genetic_algorithm(const int &population, const int &nb_gen, SDL_Rend
   std::vector<Game *> environnments = generate_environnements(population, renderer);
   std::map<int, bool> actifs; // dictionnaire auquel on associe l'état actif ou non d'un agent
   std::vector<AgentParams> params = generate_random_population(agents, actifs, population);
+  int best_agent_index = -1;
 
   // Maintenant, on fait jouer et on entraine les agents sur leurs environnements respectifs
   // et lorsqu'ils sont tous morts, on recréer le vecteur agents avec de nouveaux agents combinant les caractéristiques du meilleur agent avec un agent aléatoire ainsi qu'un nombre aléatoire de caracteristiques aléatoire
@@ -165,9 +224,8 @@ AgentParams genetic_algorithm(const int &population, const int &nb_gen, SDL_Rend
     while (nb_actifs > 0)
       play_one_time(environnments, agents, population, nb_actifs, actifs);
 
-
     // Maintenant, on détermine l'agent aillant fait le meilleur score
-    int best_agent_index = index_of_best_agent_in_population(environnments);
+    best_agent_index = index_of_best_agent_in_population(environnments);
 
     // Ensuite, on détermine un agent aléatoire (qui n'est pas le meilleur agent), pour créer une nouvelle population
     int random_agent_index;
@@ -177,41 +235,11 @@ AgentParams genetic_algorithm(const int &population, const int &nb_gen, SDL_Rend
 
     // Enfin, on applique la notion d'algorithme génétique pour créer la nouvelle population
     // On détermine les paramètres de création de la nouvelle population
-    /*
-    AgentParams params[population];
-    for (int i = 0; i < population; ++i)
-    {
-      params[i].net_shape = (int_rng(0, 1) == 0 ? net_shapes[best_agent_index] : net_shapes[random_agent_index]);
-      params[i].learning_rate = (int_rng(0, 1) == 0 ? learning_rates[best_agent_index] : learning_rates[random_agent_index]);
-      params[i].epsilon = (int_rng(0, 1) == 0 ? epsilons[best_agent_index] : epsilons[random_agent_index]);
-      params[i].gamma = (int_rng(0, 1) == 0 ? gammas[best_agent_index] : gammas[random_agent_index]);
-      params[i].batch_size = (int_rng(0, 1) == 0 ? batch_sizes[best_agent_index] : batch_sizes[random_agent_index]);
-      params[i].memory_size = (int_rng(0, 1) == 0 ? memory_sizes[best_agent_index] : memory_sizes[random_agent_index]);
-      params[i].epsilon_decay = (int_rng(0, 1) == 0 ? epsilons_decay[best_agent_index] : memory_sizes[random_agent_index]);
-      params[i].epsilon_end = (int_rng(0, 1) == 0 ? epsilons_end[best_agent_index] : epsilons_end[random_agent_index]);
-      params[i].convergence_counter = (int_rng(0, 1) == 0 ? convergence_counters[best_agent_index] : convergence_counters[random_agent_index]);
-    }
-       */
+    combine_params(params, best_agent_index, random_agent_index);
 
     // On applique les nouveaux paramètres en recréant une population
-    for (int i = 0; i < population; ++i)
-    {
-      delete agents[i];
-      agents[i] = new DQNAgent(params[i].net_shape, params[i].learning_rate, params[i].epsilon, params[i].gamma, params[i].batch_size, params[i].memory_size, params[i].epsilon_decay, params[i].epsilon_end, params[i].convergence_counter);
-
-      delete environnments[i];
-      environnments[i] = new Game(renderer);
-
-      // On récupère les paramètres de création
-      net_shapes[i] = params[i].net_shape;
-      learning_rates[i] = params[i].learning_rate;
-      epsilons[i] = params[i].epsilon;
-      gammas[i] = params[i].gamma;
-      batch_sizes[i] = params[i].batch_size;
-      memory_sizes[i] = params[i].memory_size;
-      epsilons_decay[i] = params[i].epsilon_decay;
-      epsilons_end[i] = params[i].epsilon_end;
-      convergence_counters[i] = params[i].convergence_counter;
-    }
+    generate_population_with_params(agents, environnments, params, renderer);
   }
+
+  return params[best_agent_index];
 }
